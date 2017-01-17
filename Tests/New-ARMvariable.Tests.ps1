@@ -11,80 +11,69 @@ Import-Module $modulePath
 Describe "New-ARMvariable" {
 
     Context "Simple name value tests" {
-        $hash = New-ARMvariable -Name test -Value heihei
+        $Expected = @{
+            Name = "test"
+            Value = "foo-bar"
+        }
+        $ActualVar = New-ARMvariable @Expected
 
-        It "Should create a simple hashtable with key test" {
-            $hash.test | should not be $null
+        It "Should create a PSCustomObject" {
+            $ActualVar.GetType().Name | Should Be "PSCustomObject"
         }
 
-        It "Should create a simple hashtable with key test and value [heihei]" {
-            $hash.test | should be 'heihei'
+        It "Should create a PSCustomObject with PStypeName 'ARMvariable'" {
+            $ActualVar.pstypenames[0] | should be "ARMvariable"
         }
 
-        It "Should only have one key" {
-            $hash.keys.count | should be 1
+        It "Should create a property [$($Expected.Name)]" {
+            $ActualVar.($Expected.Name) | should not be $null
+        }
+
+        It "Property [$($Expected.Name)] should have value [$($Expected.Value)]" {
+            $ActualVar.($Expected.Name) | should be $Expected.Value
         }
     }
 
     Context "Value from a hashtable" {
         $name = "subnet"
-        $expectedHash = @{
+        $expected = @{
             Name = "NameKey"
             Ipaddress = "10.0.0.2"
             SubNet = "255.255.255.0"
         }
 
-        $var = New-ARMvariable -Name $name -HashValues $expectedHash
+        $ActualVar = New-ARMvariable -Name $name -HashValues $expected
 
-        It "Should create a variable called [$name]" {
-            $var.keys -contains $name | should be $true
+        It "Should create a PSCustomObject" {
+            $ActualVar.GetType().Name | Should Be "PSCustomObject"
         }
 
-        $actual = $var.$name
-
-        It "Should have 3 keys" {
-            $actual.keys.Count | should be 3
+        It "Should create a PSCustomObject with PStypeName 'ARMvariable'" {
+            $ActualVar.pstypenames[0] | should be "ARMvariable"
         }
 
-        It "Should have a key [Name]" {
-            $actual.ContainsKey("Name") | Should be $true
+        It "Should have a Property [$name]" {
+            $ActualVar | Select-Object -ExpandProperty $name | Should not be $null
         }
 
-        It "Value of [Name] should be [($expectedHash.Name)]" {
-            $actual.Name | Should be $expectedHash.Name
+        $actual = $ActualVar.$name
+
+        It "Should have 3 properties" {
+            $ActualVar.$name.psobject.Properties.Name.Count | should be 3
+        }        
+
+        It "Value of [Name] should be [$($expected.Name)]" {
+            $actual.Name | Should be $expected.Name
         }
 
-        It "Should have a key [Ipaddress]" {
-            $actual.ContainsKey("Ipaddress") | Should be $true
+        It "Value of [Ipaddress] should be [$($expected.Ipaddress)]" {
+            $actual.Ipaddress | Should be $expected.Ipaddress
         }
 
-        It "Value of [Ipaddress] should be ]($expectedHash.Ipaddress)]" {
-            $actual.Ipaddress | Should be $expectedHash.Ipaddress
-        }
-
-        It "Should have a key [SubNet]" {
-            $actual.ContainsKey("SubNet") | Should be $true
-        }
-
-        It "Value of [SubNet] should be ]($expectedHash.SubNet)]" {
-            $actual.SubNet | Should be $expectedHash.SubNet
+        It "Value of [SubNet] should be ]$($expected.SubNet)]" {
+            $actual.SubNet | Should be $expected.SubNet
         }
     }   
-
-    Context "Object type" {
-        $name = "subnet"
-        $expectedHash = @{
-            Name = "NameKey"
-            Ipaddress = "10.0.0.2"
-            SubNet = "255.255.255.0"
-        }
-
-        $var = New-ARMvariable -Name $name -HashValues $expectedHash
-
-        It "Should create a OrderedDictionary object" {
-            $var.Gettype().FullName | Should be "System.Collections.Specialized.OrderedDictionary"
-        }
-    } 
 }
 
-Remove-Module -name posharm -ErrorAction SilentlyContinue
+Remove-Module -Name PoshARM -ErrorAction SilentlyContinue

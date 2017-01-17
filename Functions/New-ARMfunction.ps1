@@ -63,7 +63,8 @@ Param(
 
 Begin
 {
-
+    $f = $MyInvocation.InvocationName
+    throw "$f is not implemented"
 }
 
 Process

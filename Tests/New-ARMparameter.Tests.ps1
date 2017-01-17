@@ -8,7 +8,7 @@ Import-Module $modulePath
 
 Describe "New-ARMparameter" {
 
-    $newParm = @{
+    $ExpectedParm = @{
         Name = 'Resource'
         Type = 'string'
         DefaultValue = 'meh'
@@ -21,73 +21,75 @@ Describe "New-ARMparameter" {
         Metadata = @{Comment="yalla"}
     }
 
-    $parameter = New-ARMparameter @newParm
+    $actualParameter = New-ARMparameter @ExpectedParm
 
     Context "Create object" {
+
+        $actual = $actualParameter.($ExpectedParm.Name)
+
         It "Should create a new parameter object" {
-            $parameter | Should not Be $null
+            $actualParameter | Should not Be $null
         }
 
-        It "Should be of type [Hashtable]" {
-            $parameter.GetType().Name | Should be "Hashtable"
+        It "Should be of type [PScustomObject]" {
+            $actualParameter.GetType().Name | Should be "PScustomObject"
         }
 
-        It "Should have one key [$($newParm.Name)]" {
-            $parameter.keys.count | should be 1
+        It "Should create a PSCustomObject with PStypeName 'ARMparameter'" {
+            $actualParameter.pstypenames[0] | Should be "ARMparameter"
         }
 
-        it "Should have a key named [$($newParm.Name)]" {
-            $parameter.keys | Should be $newParm.Name
+        It "Should create a property with name [$($ExpectedParm.Name)]" {
+            $actual | Should not be $null
         }
 
-        $param = $parameter.($newParm.Name)
+        it "Should have a type with value [$($ExpectedParm.Type)]" {
+            $actual.Type | Should be $ExpectedParm.Type
+        }        
 
-        It "Should have an Type [$($newParm.Type)]" {
-            $param.Type | Should be $newParm.Type
+        It "Should have an DefaultValue of [$($ExpectedParm.DefaultValue)]" {
+            $actual.DefaultValue | Should be $ExpectedParm.DefaultValue
         }
 
-        It "Should have an DefaultValue [$($newParm.DefaultValue)]" {
-            $param.DefaultValue | Should be $newParm.DefaultValue
+        $actualValue = $actual.AllowedValues -join ""
+        $expectedValue = $ExpectedParm.AllowedValues -join ""
+
+        It "Should have AllowedValues equal [$expectedValue]" {
+            $actualValue | Should be $expectedValue
         }
 
-        It "Should have an AllowedValues [$($newParm.AllowedValues -join ",")]" {
-            $expected = '"' + ($newParm.AllowedValues -join "','") + '"'
-            $actual = '"' + ($param.AllowedValues -join "','") + '"'
-            $actual | Should be $expected
+        It "Should have an MinValue of [$($ExpectedParm.MinValue)]" {
+            $actual.MinValue | Should be $ExpectedParm.MinValue
         }
 
-        It "Should have an MinValue [$($newParm.MinValue)]" {
-            $param.MinValue | Should be $newParm.MinValue
+        It "Should have an MaxValue [$($ExpectedParm.MaxValue)]" {
+            $actual.MaxValue | Should be $ExpectedParm.MaxValue
         }
 
-        It "Should have an MaxValue [$($newParm.MaxValue)]" {
-            $param.MaxValue | Should be $newParm.MaxValue
-        }
-
-        It "Should have an MinLength [$($newParm.MinLength)]" {
-            $param.MinLength | Should be $newParm.MinLength
+        It "Should have an MinLength [$($ExpectedParm.MinLength)]" {
+            $actual.MinLength | Should be $ExpectedParm.MinLength
         }
         
-        It "Should have an MaxLength [$($newParm.MaxLength)]" {
-            $param.MaxLength | Should be $newParm.MaxLength
+        It "Should have an MaxLength [$($ExpectedParm.MaxLength)]" {
+            $actual.MaxLength | Should be $ExpectedParm.MaxLength
         }
 
-        $meta = $param.MetaData
+        $meta = $actual.MetaData
 
         It "Should have a MetaData property [$(($meta | Out-HashString) -replace [environment]::NewLine,'')]" {
             $meta | should not be $null
         }
 
-        It "MetaData should be of type [Hashtable]" {
-            $meta.GetType().Name | Should be "Hashtable"
+        It "MetaData should be of type [PScustomObject]" {
+            $meta.GetType().Name | Should be "PScustomObject"
         }
 
-        It "MetaData should have an Comment key with value [$($newParm.Metadata.Comment)]" {
-            $meta.Comment | Should be $newParm.Metadata.Comment
+        It "MetaData should have an Comment property with value [$($ExpectedParm.Metadata.Comment)]" {
+            $meta.Comment | Should be $ExpectedParm.Metadata.Comment
         }
 
-        It "MetaData should have an Description key with value [$($newParm.Description)]" {
-            $meta.Description | Should be $newParm.Description
+        It "MetaData should have an Description property with value [$($ExpectedParm.Description)]" {
+            $meta.Description | Should be $ExpectedParm.Description
         }       
     }    
 }
