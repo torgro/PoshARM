@@ -46,7 +46,8 @@ Param(
     [PSTypeName('ARMtemplate')]
     $Template
     ,
-    [switch]$PassThru
+    [switch]
+    $PassThru
 )
 
 Begin
@@ -58,30 +59,22 @@ Begin
 Process
 {
     Write-Verbose -Message "$f -  Processing"
-    
-    if ($script:Template)
+
+    if (-not $Template)
     {
-        Write-Verbose -Message "$f -  Got template"
-        foreach ($prop in $InputObject.psobject.Properties)
+        Write-Verbose -Message "$f -  Using module level template"
+        $Template = $script:Template
+    }
+    
+    if ($Template)
+    {
+        Write-Verbose -Message "$f -  Have a template"
+        foreach ($prop in $InputObject.PSobject.Properties)
         {
             $value = $prop.Value
             Write-Verbose -Message "$f -  Processing property $($prop.Name)"            
-            $script:Template.parameters | Add-Member -MemberType NoteProperty -Name $prop.Name -Value $value
-        }
-        <#
-        foreach ($key in $InputObject.Keys)
-        {
-            $value = $InputObject.$key
-            $customObject = [pscustomobject]$value
-            $script:Template.parameters | Add-Member -MemberType NoteProperty -Name $key -Value $customObject
-
-            if ($Template)
-            {
-                $Template.parameters | Add-Member -MemberType NoteProperty -Name $key -Value $customObject
-            }
-        }
-        #>
-        #$script:Template.parameters += $InputObject        
+            $Template.parameters | Add-Member -MemberType NoteProperty -Name $prop.Name -Value $value
+        }    
     }
     else 
     {
@@ -92,5 +85,10 @@ Process
     {
         $InputObject
     }
+}
+
+End
+{
+    Write-Verbose -Message "$f - End"
 }
 }

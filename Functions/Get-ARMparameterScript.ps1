@@ -29,41 +29,26 @@ function Get-ARMparameterScript
 [cmdletbinding()]
 Param(
     [Parameter(ValueFromPipeline)]
-    [PSCustomObject]$Parameters
+    [PSCustomObject]
+    $Parameters
 )
 
 Begin
 {
     $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"
-    #$allParams = [ordered]@{}
+    Write-Verbose -Message "$f - START"    
 }
 
 Process
 {    
-    $inputType = $Parameters.GetType().Name
+    Write-Verbose -Message "$f -  Converting to hashtable"
     
-    <#
-    if ($inputType -eq "PSCustomObject") 
-    {
-        foreach ($prop in ($Parameters | Get-Member | Where-Object MemberType -ne Method))
-        {
-            $name = $prop.Name            
-            $hash = $Parameters.$name | ConvertTo-Hash            
-            $allParams.Add($name,$hash)
-        }
-    }
-   
-
-    if ($inputType -eq "hashtable" -or $inputType -eq "OrderedDictionary")
-    {
-        $allParams = $Parameters
-    }   
-    #>
     $allParams = $Parameters | ConvertTo-Hash
-    
+
     foreach ($key in $allParams.Keys)
     {
+        Write-Verbose -Message "$f -  Processing key [$key]"
+        
         $cmdline = '$parameter = '
         $paramHash =  @{
             Name = $key
@@ -79,6 +64,11 @@ Process
         $cmdline = "$cmdline $params" + [environment]::NewLine
         "$cmdline" + "New-ARMparameter @parameter | Add-ARMparameter" + [environment]::NewLine + [environment]::NewLine
     }
+}
 
+End
+{
+    Write-Verbose -Message "$f - END"
+    
 }
 }

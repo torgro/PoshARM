@@ -43,10 +43,12 @@ function New-ARMparameter
 [cmdletbinding()]
 Param(
     [Parameter(Mandatory)]
+    [string]
     $Name
     ,
     [Parameter(Mandatory)]
     [ValidateSet("string","secureString","int","bool","object","secureObject","array")]
+    [string]
     $Type
     ,
     $DefaultValue
@@ -66,7 +68,7 @@ Param(
     $Metadata
 )
 
-    $propHash = [PSCustomobject][ordered]@{        
+    $propHash = [ordered]@{        
         type = $Type
     }
 
@@ -113,7 +115,7 @@ Param(
 
     $out = [PSCustomobject]@{
         PSTypeName = "ARMparameter"
-        $Name = $propHash    
+        $Name = [PSCustomobject]$propHash
     }
 
     $out

@@ -1,28 +1,25 @@
-#Requires -Version 4.0
+#Requires -Version 5.0
 function Get-ARMvariable
 {
 <#
 .SYNOPSIS
-    Brief synopsis about the function.
+    Get all variable or a specific one by name.
  
 .DESCRIPTION
-    Detailed explanation of the purpose of this function.
+    Get all variable or a specific one by name.
  
-.PARAMETER Param1
-    The purpose of param1.
-
-.PARAMETER Param2
-    The purpose of param2.
+.PARAMETER Name
+    Name of the variable to get. This is a dynamic parameter.
  
 .EXAMPLE
-     Get-ARMvariable -Param1 'Value1', 'Value2'
+     Get-ARMvariable
 
+     This will return all variables in the ARM template
 .EXAMPLE
-     'Value1', 'Value2' | Get-ARMvariable
+     Get-ARMvariable -Name nicName
 
-.EXAMPLE
-     Get-ARMvariable -Param1 'Value1', 'Value2' -Param2 'Value'
- 
+     This will get the variable with name nicName
+
 .INPUTS
     String
  
@@ -34,9 +31,9 @@ function Get-ARMvariable
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-    [CmdletBinding()]
-    [OutputType('PSCustomObject')]
-    param ()
+[CmdletBinding()]
+[OutputType('PSCustomObject')]
+Param()
 
 DynamicParam
 {
@@ -50,8 +47,6 @@ DynamicParam
         DPDictionary = $Dictionary            
     }
 
-    #ParameterSetName = "__AllParameterSets"
-    
     $allVariables = $script:Template.variables.Keys
 
     if ($allVariables)
@@ -67,40 +62,35 @@ DynamicParam
     $Dictionary
 }
 
-    BEGIN 
+Begin 
+{
+    $f = $MyInvocation.InvocationName
+    Write-Verbose -Message "$f - START"
+}
+
+Process 
+{       
+    $Name = $PSBoundParameters.Name
+
+    if (-not $PSBoundParameters.ContainsKey("Template"))
     {
-        $f = $MyInvocation.InvocationName
-        Write-Verbose -Message "$f - START"
+        $Template = $script:Template
     }
 
-    PROCESS 
-    {       
-        $Name = $PSBoundParameters.Name
-
-        if ([string]::IsNullOrWhiteSpace($Name))
-        {
-            $Name = "*"
-        }
-        
-        if (-not $PSBoundParameters.ContainsKey("Template"))
-        {
-            $template = $script:Template
-        }
-       
-        foreach ($key in $template.variables.keys)
-        {
-            if ($key -like $Name)
-            {
-                @{
-                    $key = $template.variables.$key
-                }
-            }
-        }
-    }
-
-    END 
+    if ($Name)
     {
-        Write-Verbose -Message "$f - START"
+        Write-Verbose -Message "$f -  Finding parameter with name [$Name]"        
+        $Template.variables | Select-Object -Property $Name
     }
+    else 
+    {
+        Write-Verbose -Message "$f -  Returning all variables"            
+        $Template.variables
+    }
+}
 
+End 
+{
+    Write-Verbose -Message "$f - START"
+}
 }
