@@ -9,7 +9,7 @@ Import-Module $modulePath
 Describe "Add-ARMresource" {
     New-ArmTemplate
 
-    $newRes = @{
+    $expected = @{
         APIversion = '2016-03-30'
         Name = 'MyVM'
         Location = 'EAST-US'
@@ -19,24 +19,24 @@ Describe "Add-ARMresource" {
         SKU = @{name="Standard_LRS"}
         Kind = 'storage'
         Properties = @{prop1=1}
-        #Resources = ''
         Type = 'Microsoft.Compute/virtualMachines'
     }
 
-    $resource = New-ARMresource @newRes    
+    $actual = New-ARMresource @expected    
 
     Context "Without pipeline" {
-        Add-ARMresource -InputObject $resource
+
+        Add-ARMresource -InputObject $actual
         $template = Get-ARMTemplate
 
         It "Should add a resource to a template" {        
             $template.resources.count | should be 1
         }
 
-        $res = $template.resources[0]
+        $actualResource = $template.resources[0]
 
-        It "Should have name property with value [$($newRes.Name)]" {            
-            $res.name | should be $newRes.Name
+        It "Should have name property with value [$($expected.Name)]" {            
+            $actualResource.name | should be $expected.Name
         }
 
         It "Should be of type Array" {
@@ -47,17 +47,18 @@ Describe "Add-ARMresource" {
     Context "With pipeline" {
         New-ArmTemplate
 
-        $resource | Add-ARMresource
+        $actual | Add-ARMresource
         $template = Get-ARMTemplate
 
         It "Should add a resource to a template" {        
             $template.resources.count | should be 1
         }
 
-        $res = $template.resources[0]
+        $actualResource = $null
+        $actualResource = $template.resources[0]
 
-        It "Should have name property with value [$($newRes.Name)]" {
-            $res.name | should be $newRes.Name
+        It "Should have name property with value [$($expected.Name)]" {
+            $actualResource.name | should be $expected.Name
         }
 
         It "Should be of type Array" {

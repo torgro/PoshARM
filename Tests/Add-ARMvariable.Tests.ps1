@@ -8,38 +8,38 @@ Import-Module $modulePath
 
 Describe "Add-ARMvariable" {
     New-ArmTemplate
-    $newVar = @{
+    $expected = @{
         Name = "Test"
-        Value = "heihei"
+        Value = "foo-bar"
     }
 
-    $var = New-ARMvariable @newVar
+    $actual = New-ARMvariable @expected
 
     Context "Without pipeline" {
-        Add-ARMvariable -InputObject $var
+        Add-ARMvariable -InputObject $actual
         $template = Get-ARMTemplate
 
         It "Should add a variable to a template" {        
-            $template.variables.keys | should not be $null
+            $template.variables | should not be $null
         }
 
-        It "Should have a key named [$($newVar.Name)]" {
-            $template.variables.Test | should not be $null
+        It "Should have a property named [$($expected.Name)]" {
+            $template.variables.($expected.Name) | should not be $null
         }
     }
     
     Context "With pipeline" {
         New-ArmTemplate
 
-        $var | Add-ARMvariable
+        $actual | Add-ARMvariable
         $template = Get-ARMTemplate
 
         It "Should add a variable to a template" {        
-            $template.variables.keys | should not be $null
+            $template.variables | should not be $null
         }
 
-        It "Should have a key named [$($newParm.Name)]" {
-            $template.variables.Test | should not be $null
+        It "Should have a property named [$($expected.Name)]" {
+            $template.variables.($expected.Name) | should not be $null
         }
     }
 }

@@ -8,7 +8,8 @@ $modulepath = Join-Path -Path $modulePath -ChildPath posharm.psd1
 Import-Module $modulePath
 
 Describe "Add-ARMparameter" {
-    $newParm = @{
+
+    $expected = @{
         Name = 'Resource'
         Type = 'string'
         DefaultValue = 'meh'
@@ -21,34 +22,34 @@ Describe "Add-ARMparameter" {
         Metadata = @{Comment="yalla"}
     }
 
-    $parameter = New-ARMparameter @newParm
+    $actual = New-ARMparameter @expected
     New-ArmTemplate
 
     Context "Without pipeline" {
-        Add-ARMparameter -InputObject $parameter
+        Add-ARMparameter -InputObject $actual
         $template = Get-ARMTemplate
 
         It "Should add a parameter to a template" {        
-            $template.parameters.keys | should not be $null
+            $template.parameters | should not be $null
         }
 
-        It "Should have a key named [$($newParm.Name)]" {
-            $template.parameters.Resource | should not be $null
+        It "Should have a property named [$($expected.Name)]" {
+            $template.parameters.($expected.Name) | should not be $null
         }
     }
     
     Context "With pipeline" {
         New-ArmTemplate
 
-        $parameter | Add-ARMparameter
+        $actual | Add-ARMparameter
         $template = Get-ARMTemplate
 
         It "Should add a parameter to a template" {        
-            $template.parameters.keys | should not be $null
+            $template.parameters | should not be $null
         }
 
-        It "Should have a key named [$($newParm.Name)]" {
-            $template.parameters.Resource | should not be $null
+        It "Should have a property named [$($expected.Name)]" {
+            $template.parameters.($expected.Name) | should not be $null
         }
     }
 }
