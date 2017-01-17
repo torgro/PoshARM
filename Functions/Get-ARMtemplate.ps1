@@ -1,5 +1,33 @@
+#Requires -Version 5.0
 function Get-ARMtemplate
 {
+<#
+.SYNOPSIS
+    Get the ARM template defined at the module level
+
+.DESCRIPTION
+    Get the ARM template defined at the module level
+
+.PARAMETER AsJSON
+    Returns the ARM template as a JSON string
+
+.PARAMETER AsHashTableString
+    Returns the ARM template as a Hashtable object
+
+.EXAMPLE
+    Get-ARMtemplate | Get-ARMtempateScript
+
+.INPUTS
+    PSCustomObject
+
+.OUTPUTS
+    string
+
+.NOTES
+    Author:  Tore Groneng
+    Website: www.firstpoint.no
+    Twitter: @ToreGroneng
+#>
 [cmdletbinding(
     DefaultParameterSetName='foo'
 )]
@@ -10,8 +38,15 @@ Param(
     [Parameter(ParameterSetName='HASH')]
     [switch]$AsHashTableString
 )
-    Write-Verbose -Message "PSScriptRoot = $PSScriptRoot"
-    Write-Verbose -Message "Location = $((Get-Location).Path)"
+
+Begin
+{
+    $f = $MyInvocation.InvocationName
+    Write-Verbose -Message "$f - START"    
+}
+
+Process
+{
     if ($AsJSON.IsPresent -eq $false -and $AsHashTableString.IsPresent -eq $false)
     {
         $Script:Template
@@ -28,4 +63,6 @@ Param(
     {
         $Script:Template | ConvertTo-Hash | Out-HashString
     }    
+}
+   
 }

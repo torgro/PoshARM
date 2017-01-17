@@ -47,7 +47,7 @@ DynamicParam
         DPDictionary = $Dictionary            
     }
 
-    $allVariables = $script:Template.variables.Keys
+    $allVariables = $script:Template.variables.PSobject.Properties.Name
 
     if ($allVariables)
     {

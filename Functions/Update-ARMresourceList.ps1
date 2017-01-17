@@ -1,5 +1,43 @@
+#Requires -Version 5.0
 function Update-ARMresourceList
 {
+<#
+.SYNOPSIS
+    This will update the allResources.json file that is used as input when creating a New-ARMresource
+
+.DESCRIPTION
+    This will update the allResources.json file that is used as input when creating a New-ARMresource. This cmdlet supports 
+    ShouldProcess (whatif).
+
+.PARAMETER Credential
+    Credentials for an Azure subscription
+
+.PARAMETER Force
+    Force an update of the file if it exists
+
+.EXAMPLE
+    Update-ARMresourceList
+
+    This will try and fetch the resoruce provider list from Azure using the current AzureRMcontext. If no AzureRMcontext exists, it will 
+    invoke Login-AzureRMAccount without credentials. 
+
+.EXAMPLE
+    Update-ARMresourceList -Credential (Get-Credential -Message "Azure Credential")
+
+    This will try and fetch the resoruce provider list from Azure using the current AzureRMcontext. If no AzureRMcontext exists, it will 
+    invoke Login-AzureRMAccount with the specified credentials. 
+
+.INPUTS
+    PSCustomObject
+
+.OUTPUTS
+    string
+
+.NOTES
+    Author:  Tore Groneng
+    Website: www.firstpoint.no
+    Twitter: @ToreGroneng
+#>
 [cmdletbinding(
     SupportsShouldProcess=$true
 )]
@@ -14,6 +52,8 @@ Param(
 
     try
     {
+        Write-Verbose -Message "$f - Getting AzureRMContext"
+        
         Get-AzureRmContext
         $LoggedIn = $true
     }
@@ -27,12 +67,12 @@ Param(
     {
         if ($Credential)
         {
-            Write-Verbose -Message "$f -  Trying login with credentials"
+            Write-Verbose -Message "$f -  Invoking Login-AzureRmAccount with credentials"
             Login-AzureRmAccount -Credential $Credential -ErrorAction Stop
         }
         else
         {
-            Write-Verbose -Message "$f -  Trying to login"
+            Write-Verbose -Message "$f -  Invoking Login-AzureRmAccount without credentials"
             Login-AzureRmAccount -ErrorAction Stop
         }
     }
@@ -41,7 +81,7 @@ Param(
 
     $outFile = @{}
     $shouldProcessOperation = "Creating file"
-
+    
     if ($Force.IsPresent)
     {
         $outFile.Add("Force", $true)

@@ -1,13 +1,40 @@
+#Requires -Version 5.0
 function Set-ARMvariable
 {
+<#
+.SYNOPSIS
+    Update an existing variable in the ARM template
+
+.DESCRIPTION
+    Update an existing variable in the ARM template
+
+.PARAMETER Name
+    The variable Name. This is a Mandatory parameter and is an dynamic parameter
+
+.PARAMETER Value
+    The new value for the variable. This is a Mandatory parameter
+
+.EXAMPLE
+    Set-ARMvariable -Name nicName -Value "MyNewNic"
+
+    This will set the variable nicName to value "MyNewNic"
+.INPUTS
+    string
+
+.OUTPUTS
+
+.NOTES
+    Author:  Tore Groneng
+    Website: www.firstpoint.no
+    Twitter: @ToreGroneng
+#>
+
 [cmdletbinding()]
 Param(    
     [Parameter(Mandatory)]
     $Value
-    ,
-    [Parameter(ValueFromPipeline)]
-    [hashtable]$Template
 )
+
 DynamicParam
 {
     $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -19,10 +46,8 @@ DynamicParam
         ValueFromPipeline = $false
         DPDictionary = $Dictionary            
     }
-
-    #ParameterSetName = "__AllParameterSets"
     
-    $allVariables = $script:Template.variables.Keys
+    $allVariables = $script:Template.variables.PSobject.Properties.Name
 
     if ($allVariables)
     {
@@ -36,18 +61,29 @@ DynamicParam
     New-DynamicParam @NewDynParam
     $Dictionary
 }
+
+Begin
+{
+    $f = $MyInvocation.InvocationName
+    Write-Verbose -Message "$f - START"    
+}
+
 Process
 {
-    $name = $PSBoundParameters.Name    
+    $Name = $PSBoundParameters.Name    
 
+    $oldValue = Get-ARMVariable -Name $Name | Select-Object -ExpandProperty $Name
+    Write-Verbose -Message "$f -  Updating variable [$Name] from '$oldValue' to '$Value"
+    
     if ($script:Template)
     {
         $script:Template.variables.$name = $Value
     }
+}
 
-    if ($Template)
-    {
-        $Template.variables.$name = $Value
-    }
+End
+{
+    Write-Verbose -Message "$f - END"
+    
 }
 }
