@@ -9,10 +9,10 @@ function Get-ARMparameterScript
     Get the Powershell script that will recreate the parameteres in the ARM template. This cmdlet is invoked by the Get-ARMtemplateScript cmdlet.
 
 .PARAMETER Parameters
-    The parameters propterty of the ARM template
+    The parameters property of the ARM template
 
 .EXAMPLE
-    Get-ARMtemplate | Select-Object parameters | Get-ARMparametersScript
+    Get-ARMtemplate | Select-Object parameters | Get-ARMparameterScript
 
 .INPUTS
     PSCustomObject

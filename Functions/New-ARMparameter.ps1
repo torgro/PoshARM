@@ -1,44 +1,44 @@
 #Requires -Version 5.0
 function New-ARMparameter
 {
-    <#    
-    .SYNOPSIS    
-        Create a new ARM template parameter
-    
-    .DESCRIPTION
-        Create a new ARM template parameter
-    
-    .PARAMETER Name
-        The name of the parameter. This is Mandatory
+<#    
+.SYNOPSIS    
+    Create a new ARM template parameter
 
-    .PARAMETER Type
-        The parameter type. Allowed values are "string","secureString","int","bool","object","secureObject","array"
+.DESCRIPTION
+    Create a new ARM template parameter
 
-    .EXAMPLE
-         New-ARMparameter -Name adminUsername -Type String
-    
-         This will create a new parameter named adminUsername of type String
+.PARAMETER Name
+    The name of the parameter. This is Mandatory
 
-    .EXAMPLE
-         $AllowedValues = @{
-             AllowedValues = "2008-R2-SP1","2012-Datacenter","2012-R2-Datacenter","2016-Nano-Server","2016-Datacenter-with-Containers","2016-Datacenter"
-         }
-         New-ARMparameter -Name windowsOSVersion -Type String -DefaultValue "2016-Datacenter" @allowedValues
-    
-         This will create a new parameter named windowsOSVersion of type String, with a default value of "2016-Datacenter" which
-         is in the allowedValues list/array         
-    
-    .INPUTS
-        String
-    
-    .OUTPUTS
-        PSCustomObject
-    
-    .NOTES
-        Author:  Tore Groneng
-        Website: www.firstpoint.no
-        Twitter: @ToreGroneng
-    #>
+.PARAMETER Type
+    The parameter type. Allowed values are "string","secureString","int","bool","object","secureObject","array"
+
+.EXAMPLE
+    New-ARMparameter -Name adminUsername -Type String
+
+    This will create a new parameter named adminUsername of type String
+
+.EXAMPLE
+    $AllowedValues = @{
+        AllowedValues = "2008-R2-SP1","2012-Datacenter","2012-R2-Datacenter","2016-Nano-Server","2016-Datacenter-with-Containers","2016-Datacenter"
+    }
+    New-ARMparameter -Name windowsOSVersion -Type String -DefaultValue "2016-Datacenter" @allowedValues
+
+    This will create a new parameter named windowsOSVersion of type String, with a default value of "2016-Datacenter" which
+    is in the allowedValues list/array         
+
+.INPUTS
+    String
+
+.OUTPUTS
+    PSCustomObject
+
+.NOTES
+    Author:  Tore Groneng
+    Website: www.firstpoint.no
+    Twitter: @ToreGroneng
+#>
     
 [cmdletbinding()]
 Param(
