@@ -21,20 +21,20 @@ Describe "New-ArmTemplate" {
             (Get-ARMTemplate).contentVersion | Should be '1.0.0.0'
         }
 
-        It "Should have a [parameters] property of type HashTable" {
-             (Get-ARMTemplate).parameters.GetType().Name | Should be 'HashTable'
+        It "Should have a [parameters] property of type [PScustomobject]" {
+             (Get-ARMTemplate).parameters.GetType().Name | Should be 'PScustomobject'
         }
 
-        It "Should have a [variables] property of type HashTable" {
-             (Get-ARMTemplate).variables.GetType().Name | Should be 'HashTable'
+        It "Should have a [variables] property of type [PScustomobject]" {
+             (Get-ARMTemplate).variables.GetType().Name | Should be 'PScustomobject'
         }
 
         It "Should have a [resources] property of type Object[]" {
              (Get-ARMTemplate).resources.GetType().Name | Should be 'Object[]'
         }
 
-        It "Should have a [outputs] property of type HashTable" {
-             (Get-ARMTemplate).outputs.GetType().Name | Should be 'HashTable'
+        It "Should have a [outputs] property of type [PScustomobject]" {
+             (Get-ARMTemplate).outputs.GetType().Name | Should be 'PScustomobject'
         }
 
         It "Should return an object if Passthru is specified" {

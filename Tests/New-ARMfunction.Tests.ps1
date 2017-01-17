@@ -8,7 +8,7 @@ Import-Module $modulePath
 
 Describe "New-ARMfunction" {
     It "does something useful" {
-        $true | Should Be $true
+        $true | Should Be $false
     }
 }
 

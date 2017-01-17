@@ -40,7 +40,7 @@ Begin
 
 Process
 {    
-    if($Variables.variables)
+    if ($Variables.variables)
     {
         $allVars = $Variables | Select-Object -ExpandProperty variables | ConvertTo-Hash
 

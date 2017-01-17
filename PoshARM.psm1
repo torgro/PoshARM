@@ -1,4 +1,4 @@
-$script:Template = @{}
+$script:Template = [PSCustomObject]@{}
 
 foreach ($function in (Get-ChildItem -file -Path(Join-Path -Path $PSScriptRoot -ChildPath .\functions)))
 {

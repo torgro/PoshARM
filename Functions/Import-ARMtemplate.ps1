@@ -45,8 +45,9 @@ Param(
     [string]
     $JsonString
     ,
-    [Parameter(ValueFromPipeline, ParameterSetName="FromFile")]
-    [object]
+    [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName="FromFile")]
+    [System.IO.FileInfo]
+    [Alias("FullName")]
     $FileName
     ,
     [switch]$PassThru
