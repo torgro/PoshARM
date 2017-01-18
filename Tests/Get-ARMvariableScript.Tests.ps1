@@ -31,6 +31,7 @@ Describe "Get-ARMvariableScript" {
             {$scriptBlock.Invoke()} | Should not throw
         }
 
+        New-ARMTemplate
         $scriptBlock.Invoke()
 
         It "Invoking the script should create a new variable" {

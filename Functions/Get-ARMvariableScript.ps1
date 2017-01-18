@@ -36,6 +36,7 @@ Begin
 {
     $f = $MyInvocation.InvocationName
     Write-Verbose -Message "$f - START"    
+    $cmdLine = ""
 }
 
 Process
@@ -49,7 +50,7 @@ Process
         {
             Write-Verbose -Message "$f -  Processing key [$key]"
 
-            $cmdLine = "New-ARMvariable -Name $key -Value " + '"' + $($allVars.$key) + '" | Add-ARMVariable'
+            $cmdLine += "New-ARMvariable -Name $key -Value " + '"' + $($allVars.$key) + '" | Add-ARMVariable'
             $cmdLine += [environment]::NewLine
         }
     }    

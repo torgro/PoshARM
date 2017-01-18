@@ -124,6 +124,7 @@ Describe "Powershell Syntax Tests" {
         $cmdletbindingCount = Measure-String -InputObject $content -SearchString "cmdletbinding(" | Select-Object -ExpandProperty Count
         $aliasExceptions = @("foreach","h","r","type")
         $aliases = Get-Alias | Where Name -notin $aliasExceptions | Select-Object -ExpandProperty Name
+        $fixmeCount = Measure-String -InputObject $content -SearchString "FIXme" | Select-Object -ExpandProperty Count
 
         foreach ($alias in $aliases)
         {
@@ -167,6 +168,11 @@ Describe "Powershell Syntax Tests" {
         It "[$name] should have cmdletbinding specified" {
             $cmdletbindingCount | should BeGreaterThan 0
         }        
+
+        It "[$name] should not have [FIXme] comment" {
+            $fixmeCount | should be 0
+        }
+        
         $aliasCount = 0        
     }    
 }
