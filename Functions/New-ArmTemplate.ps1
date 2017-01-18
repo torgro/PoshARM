@@ -1,4 +1,4 @@
-function New-ArmTemplate
+function New-ARMTemplate
 {
 [cmdletbinding()]
 Param(

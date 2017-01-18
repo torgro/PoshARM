@@ -7,8 +7,26 @@ $modulepath = Join-Path -Path $modulePath -ChildPath posharm.psd1
 Import-Module $modulePath
 
 Describe "Get-ARMtemplateScript" {
-    It "does something useful" {
-        $true | Should Be $true
+
+    Context "Single variable added to template" {
+        
+        New-ARMTemplate
+        $expected = @{
+            Name = "test"
+            Value = "foo-bar"
+        }
+        New-ARMvariable @expected | Add-ARMvariable
+
+        $variableScript = Get-ARMtemplate | Get-ARMtemplateScript
+        $scriptBlock = [scriptblock]::Create($variableScript)
+
+        It "Invoking the script should not throw" {
+            { $scriptBlock.Invoke() } | Should Not Throw
+        }
+
+        It "Invoking the script should create a new variable" {
+             ((Get-ARMtemplate).variables.psobject.properties | Measure-Object).Count | Should be 1
+        }
     }
 }
 

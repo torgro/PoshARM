@@ -24,8 +24,7 @@ function Get-ARMtemplateScript
     Author:  Tore Groneng
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
-#>
-    
+#>    
 [cmdletbinding()]
 Param(
     [Parameter(ValueFromPipeline)]
@@ -36,23 +35,37 @@ Begin
 {
     $f = $MyInvocation.InvocationName
     Write-Verbose -Message "$f - START"
+    $stringBuilder = New-Object -TypeName System.Text.StringBuilder
 }
 
 Process
 {    
     if ($Template)
     {        
-        'New-ARMtemplate'
-        ''
+        $null = $stringBuilder.AppendLine('New-ARMtemplate')
+        $null = $stringBuilder.AppendLine()
 
-        $Template.variables | Get-ARMvariableScript
-        $Template.parameters | Get-ARMparameterScript
+        Write-Verbose -Message "$f -  Processing variables"
+        [string]$vars = $Template.variables | Get-ARMvariableScript
+        $null = $stringBuilder.AppendLine($vars)
 
+        Write-Verbose -Message "$f -  Processing parameters"
+        [string]$params = $Template.parameters | Get-ARMparameterScript
+        $null = $stringBuilder.AppendLine($params)
+
+        Write-Verbose -Message "$f -  Processing resources"        
         foreach ($resource in $Template.resources)
         {
-            $resource | Get-ARMresourceScript
+            [string]$res = $resource | Get-ARMresourceScript
+            $null = $stringBuilder.AppendLine($res)
         }       
     }
+}
+
+End
+{
+    Write-Verbose -Message "$f - END"
+    $stringBuilder.ToString()
 }
 
 }

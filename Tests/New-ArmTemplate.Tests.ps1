@@ -6,7 +6,7 @@ $modulePath = Split-Path $PSScriptRoot -Parent
 $modulepath = Join-Path -Path $modulePath -ChildPath poshARM.psd1
 Import-Module $modulePath
 
-Describe "New-ArmTemplate" {
+Describe "New-ARMTemplate" {
     Context "Create Object" {
         $new = New-ArmTemplate
         It "Should return nothing if Passthru is not specified" {            

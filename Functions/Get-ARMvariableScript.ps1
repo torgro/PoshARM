@@ -40,23 +40,25 @@ Begin
 
 Process
 {    
-    if ($Variables.variables)
+    #if ($Variables.variables)
+    if ($Variables)
     {
-        $allVars = $Variables | Select-Object -ExpandProperty variables | ConvertTo-Hash
+        $allVars = $Variables | ConvertTo-Hash
 
         foreach ($key in $allVars.Keys)
         {
             Write-Verbose -Message "$f -  Processing key [$key]"
 
             $cmdLine = "New-ARMvariable -Name $key -Value " + '"' + $($allVars.$key) + '" | Add-ARMVariable'
-            $cmdLine + [environment]::NewLine
+            $cmdLine += [environment]::NewLine
         }
     }    
 }
 
 End 
 {
-    Write-Verbose -Message "$f - START"
+    $cmdLine
+    Write-Verbose -Message "$f - END"
 }
 
 }
