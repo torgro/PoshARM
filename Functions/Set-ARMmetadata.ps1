@@ -1,5 +1,33 @@
 function Set-ARMmetadata
 {
+<#
+.SYNOPSIS
+    Creates a metadata.json file for your ARM template
+
+.DESCRIPTION
+    Creates a metadata.json file for your ARM template
+
+.EXAMPLE
+    $meta = @{
+        ItemDisplayName = "Blank Template"
+        Description     = "A blank template and empty parameters file"
+        Summary         = "A blank template and empty parameters file.  "
+        GitHubUsername  = "torgro"
+    }
+    Set-ARMmetadata @meta
+
+    This will create a file metadata.json containing the information in $meta
+
+.INPUTS
+    string
+
+.OUTPUTS
+    
+.NOTES
+    Author:  Tore Groneng
+    Website: www.firstpoint.no
+    Twitter: @ToreGroneng
+#>
 [cmdletbinding()]
 Param(
     $ItemDisplayName

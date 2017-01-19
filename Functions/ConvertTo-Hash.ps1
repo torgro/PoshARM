@@ -1,5 +1,37 @@
+#Requires -Version 5.0
 function ConvertTo-Hash
 {
+<#
+.SYNOPSIS
+    Converts a PScustomobject to a hashtable
+
+.DESCRIPTION
+    Converts a PScustomobject to a hashtable
+
+.PARAMETER InputObject
+    The PSCustomObject you want to convert to a hashtable
+
+.EXAMPLE
+    $obj = [PSCustomobject]@{
+        Name = "Tore"
+        Value = "Test"
+    }
+
+    $obj | ConvertTo-Hash
+
+    This will create a hashtable with keys matching the properties of the object.
+
+.INPUTS
+    PSCustomObject
+
+.OUTPUTS
+    hashtable
+
+.NOTES
+    Author:  Tore Groneng
+    Website: www.firstpoint.no
+    Twitter: @ToreGroneng
+#>
 [cmdletbinding()]
 Param(
     [Parameter(ValueFromPipeline)]

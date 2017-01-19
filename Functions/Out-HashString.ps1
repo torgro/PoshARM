@@ -1,5 +1,42 @@
 function Out-HashString
 {
+<#
+.SYNOPSIS
+    Convert an hashtable or and OrderedDictionary to a string
+
+.DESCRIPTION
+    Convert an hashtable or and OrderedDictionary to a string
+
+.PARAMETER InputObject
+    The object that is to be converted
+
+.PARAMETER PreSpacing
+    Number of spaces used for indentation
+
+.EXAMPLE
+    $hashObject = @{
+        Name = "Tore"
+        Goal = "Rule the World"
+    }
+    $hashObject | Out-HashString
+
+    This will convert the hashtable to the following string
+    @{
+        Name = "Tore"
+        Goal = "Rule the World"
+    }
+
+.INPUTS
+    Hashtable
+
+.OUTPUTS
+    string
+    
+.NOTES
+    Author:  Tore Groneng
+    Website: www.firstpoint.no
+    Twitter: @ToreGroneng
+#>
 [cmdletbinding()]
 Param(
     [Parameter(ValueFromPipeLine)]
