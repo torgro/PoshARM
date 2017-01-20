@@ -1,6 +1,6 @@
 # PoshARM
 
-## What is this<+
+## What is this?
 A Powershell module for Azure ARM templates. You can parse and create Azure ARM templates with this module.
 
 ## Cmdlets implemented
@@ -8,6 +8,7 @@ A Powershell module for Azure ARM templates. You can parse and create Azure ARM 
 #### Add-ARMparameter**
 
 > Add an ARM parameter to an ARM template.
+
 #### Add-ARMresource**
 
 > Add an ARM resource to an ARM template.
