@@ -95,7 +95,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('Template','ARM template','ARM','JSON','script ARM template','Powershell ARM','Azure Resource Manager')
+        Tags = @('Azure','Template','ARM','JSON','Resource','Manager','Convert','Import')
 
         # A URL to the license for this module.
         # LicenseUri = ''

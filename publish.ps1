@@ -6,20 +6,22 @@ Param(
 )
 
 $tags = @(
-    "Azure template"
+    "Azure"
     , 
-    "ARM template"
+    "Template"
     , 
     "ARM"
     , 
     "JSON"
     , 
-    "script ARM template"
+    "Resource"
     ,
-    "Powershell ARM"
+    "Manager"
     ,
-    "Azure Resource Manager"
+    "Convert"
+    ,
+    "Import"
 )
 
 
-Publish-Module -NuGetApiKey $APIkey -Name .\CliMenu.psd1
+Publish-Module -NuGetApiKey $APIkey -Name .\posharm.psd1
