@@ -105,4 +105,4 @@ Current status: Under development
 
 
 ## PowershellGallery
-Published to PowershellGallery: Not yet, but very soon
+Published to PowershellGallery: [https://www.powershellgallery.com/packages/posharm](https://www.powershellgallery.com/packages/posharm)
