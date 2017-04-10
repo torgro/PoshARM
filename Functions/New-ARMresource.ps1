@@ -69,7 +69,7 @@ Param(
     [hashtable]
     $Properties
     ,
-    [hashtable]
+    [array]
     $Resources
 )
 DynamicParam
