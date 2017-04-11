@@ -1,108 +1,90 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path | Split-Path -Parent | Join-Path -ChildPath Functions
 
-function Measure-String
-{
-[cmdletbinding()]
-Param(
-    [Parameter(ValueFromPipeline)]
-    [string[]]$InputObject
-    ,
-    [string]$SearchString
-    ,
-    [switch]$SkipComments
-)
+function Measure-String {
+    [cmdletbinding()]
+    Param(
+        [Parameter(ValueFromPipeline)]
+        [string[]]$InputObject
+        ,
+        [string]$SearchString
+        ,
+        [switch]$SkipComments
+    )
 
-Begin
-{
-    $count = 0
-    $inCommentSection = $false
-    $PreviousStr = ""
-}
-
-Process
-{   
-    if ($SearchString.Length -gt 1)
-    {
-        foreach ($str in $InputObject)
-        {
-            if($SkipComments.IsPresent)
-            {
-                if ($Str.Contains("<#"))
-                {
-                    $inCommentSection = $true
-                    Write-Verbose "in commentssection"
-                }
-                
-                $trimmed = $str.TrimStart()
-                if ($PreviousStr.Contains("#>"))
-                {
-                    Write-Verbose "end of commentssection"
-                    $inCommentSection = $false
-                }
-
-                $PreviousStr = $str
-
-                if ($trimmed.StartsWith("#") -or $inCommentSection -eq $true)
-                {
-                    continue
-                }
-            }
-            
-            Write-Verbose "Searching [$str] for [$SearchString]"
-            $stringlength = $str.length
-            $searchTextLength = $SearchString.Length
-            $replaced = $str.ToLower().Replace($SearchString.ToLower(),"")
-            $foundCount = ($stringlength - $replaced.length) / $searchTextLength
-            $count += $foundCount            
-        }
+    Begin {
+        $count = 0
+        $inCommentSection = $false
+        $PreviousStr = ""
     }
-    else
-    {
-        foreach ($str in $InputObject)
-        {
-            
-            if($SkipComments.IsPresent)
-            {
-                if ($Str.Contains("<#"))
-                {
-                    $inCommentSection = $true
-                    Write-Verbose "Start of comment ssection"
-                }
+
+    Process {   
+        if ($SearchString.Length -gt 1) {
+            foreach ($str in $InputObject) {
+                if ($SkipComments.IsPresent) {
+                    if ($Str.Contains("<#")) {
+                        $inCommentSection = $true
+                        Write-Verbose "in commentssection"
+                    }
                 
-                $trimmed = $str.TrimStart()
-                if ($PreviousStr.Contains("#>"))
-                {
-                    Write-Verbose "End of comment ssection"
-                    $inCommentSection = $false
-                }
+                    $trimmed = $str.TrimStart()
+                    if ($PreviousStr.Contains("#>")) {
+                        Write-Verbose "end of commentssection"
+                        $inCommentSection = $false
+                    }
 
-                $PreviousStr = $str
+                    $PreviousStr = $str
 
-                if ($trimmed.StartsWith("#") -or $inCommentSection -eq $true)
-                {
-                    Write-Verbose "Skipping searching [$str] for [$SearchString]"
-                    continue
+                    if ($trimmed.StartsWith("#") -or $inCommentSection -eq $true) {
+                        continue
+                    }
                 }
-            }
-
-            Write-Verbose "Searching [$str] for [$SearchString]"
-            foreach ($char in $str.ToCharArray())
-            {
-                if ($char -eq $SearchString)
-                {
-                    $count++
-                }
+            
+                Write-Verbose "Searching [$str] for [$SearchString]"
+                $stringlength = $str.length
+                $searchTextLength = $SearchString.Length
+                $replaced = $str.ToLower().Replace($SearchString.ToLower(), "")
+                $foundCount = ($stringlength - $replaced.length) / $searchTextLength
+                $count += $foundCount            
             }
         }
-    }    
-}
-END
-{
-    [Pscustomobject]@{
-        SearchString = $SearchString
-        Count = $count
-    }    
-}
+        else {
+            foreach ($str in $InputObject) {
+            
+                if ($SkipComments.IsPresent) {
+                    if ($Str.Contains("<#")) {
+                        $inCommentSection = $true
+                        Write-Verbose "Start of comment ssection"
+                    }
+                
+                    $trimmed = $str.TrimStart()
+                    if ($PreviousStr.Contains("#>")) {
+                        Write-Verbose "End of comment ssection"
+                        $inCommentSection = $false
+                    }
+
+                    $PreviousStr = $str
+
+                    if ($trimmed.StartsWith("#") -or $inCommentSection -eq $true) {
+                        Write-Verbose "Skipping searching [$str] for [$SearchString]"
+                        continue
+                    }
+                }
+
+                Write-Verbose "Searching [$str] for [$SearchString]"
+                foreach ($char in $str.ToCharArray()) {
+                    if ($char -eq $SearchString) {
+                        $count++
+                    }
+                }
+            }
+        }    
+    }
+    END {
+        [Pscustomobject]@{
+            SearchString = $SearchString
+            Count = $count
+        }    
+    }
 }
 
 
@@ -110,11 +92,9 @@ Describe "Powershell Syntax Tests" {
     $files = Get-ChildItem -Path $here | Where-Object Name -notlike "*.Tests.ps1"
     #$files = Get-ChildItem -Path $here | Where-Object Name -eq "New-DynamicParam.ps1"
 
-    foreach ($file in $files)
-    {
+    foreach ($file in $files) {
         $content = Get-Content -Path $file.fullname -Encoding UTF8 -ReadCount 0 -Raw
-        $fileName = $file.FileName
-        $name = $file.BaseName.Replace(".Tests","")
+        $name = $file.BaseName.Replace(".Tests", "")
         $functionNameCount = Measure-String -InputObject $content -SearchString $name | Select-Object -ExpandProperty Count
         $quotes = Measure-String -InputObject $content -SearchString "'" -SkipComments | Select-Object -ExpandProperty Count
         $doubleQuotes = Measure-String -InputObject $content -SearchString '"' | Select-Object -ExpandProperty Count
@@ -122,15 +102,13 @@ Describe "Powershell Syntax Tests" {
         $ifFormatting = Measure-String -InputObject $content -SearchString "if(" | Select-Object -ExpandProperty Count
         $foreachFormatting = Measure-String -InputObject $content -SearchString "foreach(" | Select-Object -ExpandProperty Count
         $cmdletbindingCount = Measure-String -InputObject $content -SearchString "cmdletbinding(" | Select-Object -ExpandProperty Count
-        $aliasExceptions = @("foreach","h","r","type")
-        $aliases = Get-Alias | Where Name -notin $aliasExceptions | Select-Object -ExpandProperty Name
+        $aliasExceptions = @("foreach", "h", "r", "type")
+        $aliases = Get-Alias | Where-Object Name -notin $aliasExceptions | Select-Object -ExpandProperty Name
         $fixmeCount = Measure-String -InputObject $content -SearchString "FIXme" | Select-Object -ExpandProperty Count
 
-        foreach ($alias in $aliases)
-        {
+        foreach ($alias in $aliases) {
             $aliasCount = (Measure-String -InputObject $content -SearchString " $alias " -SkipComments).Count
-            if ($aliasCount -ne 0)
-            {
+            if ($aliasCount -ne 0) {
                 It "[$name] should not use Alias [$alias]" {
                     $aliasCount | Should Be 0
                 }

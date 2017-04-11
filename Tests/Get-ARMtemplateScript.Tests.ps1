@@ -25,7 +25,7 @@ Describe "Get-ARMtemplateScript" {
         }
 
         It "Invoking the script should create a new variable" {
-             ((Get-ARMtemplate).variables.psobject.properties | Measure-Object).Count | Should be 1
+            ((Get-ARMtemplate).variables.psobject.properties | Measure-Object).Count | Should be 1
         }
     }
 }

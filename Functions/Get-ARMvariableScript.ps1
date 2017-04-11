@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Get-ARMvariableScript
-{
-<#
+function Get-ArmVariableScript {
+    <#
 .SYNOPSIS
     Get the Powershell script that will recreate the variables in the ARM template
 
@@ -25,41 +24,37 @@ function Get-ARMvariableScript
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding()]
-Param(
-    [Parameter(ValueFromPipeline)]
-    [PSCustomObject]
-    $Variables
-)
+    [cmdletbinding()]
+    [outputtype([string])]
+    Param(
+        [Parameter(ValueFromPipeline)]
+        [PSCustomObject]
+        $Variables
+    )
 
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"    
-    $cmdLine = ""
-}
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"    
+        $cmdLine = ""
+    }
 
-Process
-{    
-    #if ($Variables.variables)
-    if ($Variables)
-    {
-        $allVars = $Variables | ConvertTo-Hash
+    Process {    
+        #if ($Variables.variables)
+        if ($Variables) {
+            $allVars = $Variables | ConvertTo-Hash
 
-        foreach ($key in $allVars.Keys)
-        {
-            Write-Verbose -Message "$f -  Processing key [$key]"
+            foreach ($key in $allVars.Keys) {
+                Write-Verbose -Message "$f -  Processing key [$key]"
 
-            $cmdLine += "New-ARMvariable -Name $key -Value " + '"' + $($allVars.$key) + '" | Add-ARMVariable'
-            $cmdLine += [environment]::NewLine
-        }
-    }    
-}
+                $cmdLine += "New-ARMvariable -Name $key -Value " + '"' + $($allVars.$key) + '" | Add-ARMVariable'
+                $cmdLine += [environment]::NewLine
+            }
+        }    
+    }
 
-End 
-{
-    $cmdLine
-    Write-Verbose -Message "$f - END"
-}
+    End {
+        $cmdLine
+        Write-Verbose -Message "$f - END"
+    }
 
 }

@@ -97,8 +97,7 @@ Describe "ConvertTo-Hash" {
     Context "Array handling with pipeline" {
         
         $array = @()
-        foreach ($int in (1..2))
-        {
+        foreach ($int in (1..2)) {
             $array += [PSCustomObject]@{
                 Number = $int
                 Name = "My name is $int"
@@ -115,13 +114,12 @@ Describe "ConvertTo-Hash" {
             $arrayObj.ArrayItem -is [array] | Should be $true
         }
 
-        it "Should convert the array to a collection of OrderedDictionary"{
+        it "Should convert the array to a collection of OrderedDictionary" {
             $assert.GetType().Name | Should be "OrderedDictionary"
         }
 
         $index = 0
-        foreach ($hashItem in $assert.ArrayItem)
-        {
+        foreach ($hashItem in $assert.ArrayItem) {
             It "Should have a collection of OrderedDictionary values" {
                 $hashItem.GetType().Name | Should Be "OrderedDictionary"
             }
@@ -136,8 +134,7 @@ Describe "ConvertTo-Hash" {
     Context "Array handling without pipeline" {
         
         $array = @()
-        foreach ($int in (1..2))
-        {
+        foreach ($int in (1..2)) {
             $array += [PSCustomObject]@{
                 Number = $int
                 Name = "My name is $int"
@@ -154,13 +151,12 @@ Describe "ConvertTo-Hash" {
             $arrayObj.ArrayItem -is [array] | Should be $true
         }
 
-        it "Should convert the array to a collection of OrderedDictionary"{
+        it "Should convert the array to a collection of OrderedDictionary" {
             $assert.GetType().Name | Should be "OrderedDictionary"
         }
 
         $index = 0
-        foreach ($hashItem in $assert.ArrayItem)
-        {
+        foreach ($hashItem in $assert.ArrayItem) {
             It "Should have a collection of OrderedDictionary values" {
                 $hashItem.GetType().Name | Should Be "OrderedDictionary"
             }
@@ -173,7 +169,7 @@ Describe "ConvertTo-Hash" {
     }
 
     Context "Passthrou Hashtable with pipeline" {
-        $hash = @{test=1}
+        $hash = @{test = 1}
         $assert = $hash | ConvertTo-Hash
         It "Should Passthrou inputobject if it is a hashtable" {            
             $assert.GetType().Name | Should be "hashtable"
@@ -185,7 +181,7 @@ Describe "ConvertTo-Hash" {
     }
 
     Context "Passthrou OrderedDictionary with pipeline" {
-        $ordered = [ordered]@{test=1}
+        $ordered = [ordered]@{test = 1}
         $assert = $ordered | ConvertTo-Hash
 
         It "Should Passthrou inputobject if it is a OrderedDictionary" {            
@@ -198,7 +194,7 @@ Describe "ConvertTo-Hash" {
     }
 
     Context "Passthrou Hashtable without pipeline" {
-        $hash = @{test=1}
+        $hash = @{test = 1}
         $assert = ConvertTo-Hash -InputObject $hash
 
         It "Should Passthrou inputobject if it is a hashtable" {            
@@ -211,7 +207,7 @@ Describe "ConvertTo-Hash" {
     }
 
     Context "Passthrou OrderedDictionary without pipeline" {
-        $ordered = [ordered]@{test=1}
+        $ordered = [ordered]@{test = 1}
         $assert = ConvertTo-Hash -InputObject $ordered
 
         It "Should Passthrou inputobject if it is a OrderedDictionary" {            

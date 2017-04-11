@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Get-ARMresourceScript
-{
-<#
+function Get-ArmResourceScript {
+    <#
 .SYNOPSIS
     Get the Powershell script that will recreate the resources in the ARM template
 
@@ -25,40 +24,35 @@ function Get-ARMresourceScript
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding()]
-Param(
-    [Parameter(ValueFromPipeline)]
-    [PSCustomObject]
-    $Resources
-)
+    [cmdletbinding()]
+    Param(
+        [Parameter(ValueFromPipeline)]
+        [PSCustomObject]
+        $Resources
+    )
 
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"
 
-    $cmd = Get-Command -Name New-ARMresource
-    $cmdParams = $cmd.Parameters.Keys
-}
-
-Process
-{
-    foreach ($resource in $Resources)
-    {
-        $hash = $resource | ConvertTo-Hash
-        $cmdline = '$resource = '
-
-        foreach ($key in $hash.Keys)
-        {
-            if ($key -notin $cmdParams)
-            {
-                Write-Warning -Message "Parameter [$key] not found in $($cmd.Name)"
-            }
-        }
-
-        $params = $hash | Out-HashString
-        $cmdline = "$cmdline$params" + [environment]::NewLine
-        "$cmdline" + "New-ARMresource @resource | Add-ARMresource" + [environment]::NewLine + [environment]::NewLine
+        $cmd = Get-Command -Name New-ARMresource
+        $cmdParams = $cmd.Parameters.Keys
     }
-}
+
+    Process {
+        foreach ($resource in $Resources) {
+            $hash = $resource | ConvertTo-Hash
+            $cmdline = '$resource = '
+
+            foreach ($key in $hash.Keys) {
+                if ($key -notin $cmdParams) {
+                    Write-Warning -Message "Parameter [$key] not found in $($cmd.Name)"
+                }
+            }
+
+            $params = $hash | Out-HashString
+            $cmdline = "$cmdline$params" + [environment]::NewLine
+            "$cmdline" + "New-ARMresource @resource | Add-ARMresource" + [environment]::NewLine + [environment]::NewLine
+        }
+    }
 }

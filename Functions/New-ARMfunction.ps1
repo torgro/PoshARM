@@ -1,37 +1,30 @@
-function New-ARMfunction
-{
-[cmdletbinding()]
-Param(
-    #[Parameter(ParameterSetName='concat')]
-    [switch]$ConCat
-    ,
-    #[Parameter(ParameterSetName='concat')]
-    [string[]]$Values
-)
-    DynamicParam
-    {
+function New-ArmFunction {
+    [cmdletbinding()]
+    [outputtype([string])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    Param(
+        [switch]$ConCat
+        ,
+        [string[]]$Values
+    )
+    DynamicParam {
         $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
         $NewDynParam = @{
-            Name = "Variable"            
+            Name = "Variable"
             Mandatory = $false
             ValueFromPipelineByPropertyName = $true
             ValueFromPipeline = $false
-            DPDictionary = $Dictionary            
+            DPDictionary = $Dictionary
         }
-
-        #ParameterSetName = "__AllParameterSets"
-        #ParameterSetName = "ByVariable"
 
         $allVars = $script:Template.variables.Keys
 
-        if ($allVars)
-        {
-            $null = $NewDynParam.Add("ValidateSet",$allVars)
+        if ($allVars) {
+            $null = $NewDynParam.Add("ValidateSet", $allVars)
         }
-        else
-        {
-            $null = $NewDynParam.Add("ValidateSet",@("-"))
+        else {
+            $null = $NewDynParam.Add("ValidateSet", @("-"))
         }
 
         New-DynamicParam @NewDynParam
@@ -40,18 +33,15 @@ Param(
         #$NewDynParam.ParameterSetName = "ByParam"
         $allParams = $script:Template.parameters.Keys
 
-        if (($allParams | Measure-Object).Count -eq 1)
-        {
-            $allParams = @(,$allParams)
+        if (($allParams | Measure-Object).Count -eq 1) {
+            $allParams = @(, $allParams)
         }
 
-        if ($allParams)
-        {
+        if ($allParams) {
             $NewDynParam.ValidateSet = $allParams
         }
-        else
-        {
-            $NewDynParam.ValidateSet = @("empty","box")
+        else {
+            $NewDynParam.ValidateSet = @("empty", "box")
         }
 
         New-DynamicParam @NewDynParam
@@ -61,52 +51,45 @@ Param(
         $Dictionary
     }
 
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    throw "$f is not implemented"
-}
+    Begin {
+        $f = $MyInvocation.InvocationName
+        throw "$f is not implemented"
+    }
 
-Process
-{
-    $var = $PSBoundParameters.Variable
-    $param = $PSBoundParameters.Parameter
+    Process {
+
+        $var = $PSBoundParameters.Variable
+        $param = $PSBoundParameters.Parameter
     
-    $hashKeyIndex = [ordered]@{}
-    $index = 0
-    foreach ($key in $PSBoundParameters.Keys)
-    {
-        $hashKeyIndex.Add($key,$index)
-        $index++
-    }
-
-    if ($ConCat)
-    {
-        $ConcatValue = "[concat('"
-        if ($Values)
-        {
-            return "$ConcatValue$($Values -join "','")))]"
+        $hashKeyIndex = [ordered]@{}
+        $index = 0
+        foreach ($key in $PSBoundParameters.Keys) {
+            $hashKeyIndex.Add($key, $index)
+            $index++
         }
 
-        if ($var -and $param)
-        {
-            $ConcatValue = "[concat("
-            $varValue = "variable('$var')"
-            $paramValue = "parameter('$param')"
-            
-            $paramIndex = $hashKeyIndex.Parameter
-            $varIndex = $hashKeyIndex.Variable
-
-            if ($paramIndex -lt $varIndex)
-            {
-                return "$ConcatValue" + "$paramValue," + "$varValue" + ")]"
+        if ($ConCat) {
+            $ConcatValue = "[concat('"
+            if ($Values) {
+                return "$ConcatValue$($Values -join "','")))]"
             }
-            
-            if ($varIndex -lt $paramIndex)
-            {
-                return "$ConcatValue" + "$varValue," + "$paramValue" + "')]"
-            }            
+
+            if ($var -and $param) {
+                $ConcatValue = "[concat("
+                $varValue = "variable('$var')"
+                $paramValue = "parameter('$param')"
+
+                $paramIndex = $hashKeyIndex.Parameter
+                $varIndex = $hashKeyIndex.Variable
+
+                if ($paramIndex -lt $varIndex) {
+                    return "$ConcatValue" + "$paramValue," + "$varValue" + ")]"
+                }
+
+                if ($varIndex -lt $paramIndex) {
+                    return "$ConcatValue" + "$varValue," + "$paramValue" + "')]"
+                }
+            }
         }
     }
-}
 }

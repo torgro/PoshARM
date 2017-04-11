@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Add-ARMparameter
-{
-<#
+function Add-ArmParameter {
+    <#
 .SYNOPSIS
     Add an ARM parameter to an ARM template.
 
@@ -37,58 +36,50 @@ function Add-ARMparameter
     Twitter: @ToreGroneng
 #>
     
-[cmdletbinding()]
-Param(
-    [Parameter(Mandatory, ValueFromPipeline)]
-    [PSTypeName('ARMparameter')]
-    $InputObject
-    ,
-    [PSTypeName('ARMtemplate')]
-    $Template
-    ,
-    [switch]
-    $PassThru
-)
-
-Begin
-{
-    $f = $MyInvocation.InvocationName    
-    Write-Verbose -Message "$f - START"
-}
-
-Process
-{
-    Write-Verbose -Message "$f -  Processing"
-
-    if (-not $Template)
-    {
-        Write-Verbose -Message "$f -  Using module level template"
-        $Template = $script:Template
-    }
-    
-    if ($Template)
-    {
-        Write-Verbose -Message "$f -  Have a template"
-        foreach ($prop in $InputObject.PSobject.Properties)
-        {
-            $value = $prop.Value
-            Write-Verbose -Message "$f -  Processing property $($prop.Name)"            
-            $Template.parameters | Add-Member -MemberType NoteProperty -Name $prop.Name -Value $value
-        }    
-    }
-    else 
-    {
-        Write-Verbose -Message "$f -  Template not found"        
-    }
-
-    if ($PassThru.IsPresent)
-    {
+    [cmdletbinding()]
+    Param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [PSTypeName('ARMparameter')]
         $InputObject
-    }
-}
+        ,
+        [PSTypeName('ARMtemplate')]
+        $Template
+        ,
+        [switch]
+        $PassThru
+    )
 
-End
-{
-    Write-Verbose -Message "$f - End"
-}
+    Begin {
+        $f = $MyInvocation.InvocationName    
+        Write-Verbose -Message "$f - START"
+    }
+
+    Process {
+        Write-Verbose -Message "$f -  Processing"
+
+        if (-not $Template) {
+            Write-Verbose -Message "$f -  Using module level template"
+            $Template = $script:Template
+        }
+    
+        if ($Template) {
+            Write-Verbose -Message "$f -  Have a template"
+            foreach ($prop in $InputObject.PSobject.Properties) {
+                $value = $prop.Value
+                Write-Verbose -Message "$f -  Processing property $($prop.Name)"            
+                $Template.parameters | Add-Member -MemberType NoteProperty -Name $prop.Name -Value $value
+            }    
+        }
+        else {
+            Write-Verbose -Message "$f -  Template not found"        
+        }
+
+        if ($PassThru.IsPresent) {
+            $InputObject
+        }
+    }
+
+    End {
+        Write-Verbose -Message "$f - End"
+    }
 }

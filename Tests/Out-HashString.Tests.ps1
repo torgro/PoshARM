@@ -16,14 +16,14 @@ Describe "Out-HashString" {
         }
 
         It "Should convert a hashtabel to a string representation" {
-            $var = @{Test="keyValue"}
+            $var = @{Test = "keyValue"}
             $Expected = '@{\r\n    Test = "keyValue"\r\n}' -replace ([regex]::Escape("\r\n")), [environment]::NewLine
             $actual = Out-HashString -InputObject $var
             $actual | Should Be $Expected
         }
 
         It "Should handle nested hashtables" {
-            $var = @{Test="keyValue";Nested = @{Key1="Value1";Key2="Value2"}}
+            $var = @{Test = "keyValue"; Nested = @{Key1 = "Value1"; Key2 = "Value2"}}
             $Expected = '@{\r\n    Test = "keyValue"\r\n    Nested = @{\r\n        Key1 = "Value1"\r\n        Key2 = "Value2"\r\n    }\r\n}' -replace ([regex]::Escape("\r\n")), [environment]::NewLine
             $actual = Out-HashString -InputObject $var
             $actual | Should Be $Expected
@@ -38,14 +38,14 @@ Describe "Out-HashString" {
         }
 
         It "Should convert a hashtabel to a string representation" {
-            $var = @{Test="keyValue"}
+            $var = @{Test = "keyValue"}
             $Expected = '@{\r\n    Test = "keyValue"\r\n}' -replace ([regex]::Escape("\r\n")), [environment]::NewLine
             $actual = $var | Out-HashString
             $actual | Should Be $Expected
         }
 
         It "Should handle nested hashtables" {
-            $var = @{Test="keyValue";Nested = @{Key1="Value1";Key2="Value2"}}
+            $var = @{Test = "keyValue"; Nested = @{Key1 = "Value1"; Key2 = "Value2"}}
             $Expected = '@{\r\n    Test = "keyValue"\r\n    Nested = @{\r\n        Key1 = "Value1"\r\n        Key2 = "Value2"\r\n    }\r\n}' -replace ([regex]::Escape("\r\n")), [environment]::NewLine
             $actual = $var | Out-HashString
             $actual | Should Be $Expected

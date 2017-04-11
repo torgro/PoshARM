@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Set-ARMparameter
-{
-<#
+function Set-ARMparameter {
+    <#
 .SYNOPSIS
     Update an existing parameter in the ARM template
 
@@ -38,57 +37,52 @@ function Set-ARMparameter
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding()]
-Param(    
-    [Parameter(Mandatory)]
-    [PSCustomObject]
-    $Value
-)
-DynamicParam
-{
-    $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+    [cmdletbinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    Param(    
+        [Parameter(Mandatory)]
+        [PSCustomObject]
+        $Value
+    )
+    DynamicParam {
+        $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-    $NewDynParam = @{
-        Name = "Name"            
-        Mandatory = $true
-        ValueFromPipelineByPropertyName = $true
-        ValueFromPipeline = $false
-        DPDictionary = $Dictionary            
-    }
+        $NewDynParam = @{
+            Name = "Name"
+            Mandatory = $true
+            ValueFromPipelineByPropertyName = $true
+            ValueFromPipeline = $false
+            DPDictionary = $Dictionary
+        }
     
-    $allParameters = $script:Template.parameters.PSobject.Properties.Name
+        $allParameters = $script:Template.parameters.PSobject.Properties.Name
 
-    if ($allParameters)
-    {
-        $null = $NewDynParam.Add("ValidateSet",$allParameters)
+        if ($allParameters) {
+            $null = $NewDynParam.Add("ValidateSet", $allParameters)
+        }
+        else {
+            $null = $NewDynParam.Add("ValidateSet", @("-"))
+        }
+
+        New-DynamicParam @NewDynParam
+        $Dictionary
     }
-    else
-    {
-        $null = $NewDynParam.Add("ValidateSet",@("-"))
+    # FIXME this cmdlet should reflect the parameters of New-ARMparameter
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"    
     }
 
-    New-DynamicParam @NewDynParam
-    $Dictionary
-}
-# FIXME this cmdlet should reflect the parameters of New-ARMparameter
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"    
-}
+    Process {
+        $Name = $PSBoundParameters.Name
 
-Process
-{
-    $Name = $PSBoundParameters.Name
+        $oldvalue = ((Get-ARMparameter -Name $Name | Select-Object -ExpandProperty $name | ConvertTo-Hash | Out-HashString) -replace [environment]::NewLine, "") -replace "  ", ""
+        $newValue = (($value | ConvertTo-Hash | Out-HashString) -replace [environment]::NewLine, "") -replace "  ", ""
+        Write-Verbose -Message "$f -  Updating variable [$Name] from '$oldValue' to '$newValue"
 
-    $oldvalue = ((Get-ARMparameter -Name $Name | Select-Object -ExpandProperty $name | ConvertTo-Hash | Out-HashString) -replace [environment]::NewLine,"") -replace "  ",""
-    $newValue = (($value | ConvertTo-Hash | Out-HashString) -replace [environment]::NewLine,"") -replace "  ",""
-    Write-Verbose -Message "$f -  Updating variable [$Name] from '$oldValue' to '$newValue"
-
-    if ($script:Template)
-    {
-        $script:Template.parameters.$name = $Value
+        if ($script:Template) {
+            $script:Template.parameters.$name = $Value
+        }
     }
-}
 
 }

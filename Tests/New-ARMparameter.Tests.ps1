@@ -12,13 +12,13 @@ Describe "New-ARMparameter" {
         Name = 'Resource'
         Type = 'string'
         DefaultValue = 'meh'
-        AllowedValues = @("meh", "det","foo")
+        AllowedValues = @("meh", "det", "foo")
         MinValue = 1
         MaxValue = 3
         MinLength = '3'
         MaxLength = '99'
         Description = 'Description'
-        Metadata = @{Comment="yalla"}
+        Metadata = @{Comment = "yalla"}
     }
 
     $actualParameter = New-ARMparameter @ExpectedParm

@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Import-ARMtemplate
-{
-<#
+function Import-ArmTemplate {
+    <#
 .SYNOPSIS
     Import an ARM template.
 
@@ -25,7 +24,7 @@ function Import-ARMtemplate
     Get-ARMtemplate
 
 .EXAMPLE
-    Import-ARMtemplate -FileName .\TestFiles\SimpleVM.json
+    Import-ARMtemplate -FileName .\TestFiles\SiWmpleVM.json
     Get-ARMtemplate
 
 .INPUTS
@@ -39,63 +38,54 @@ function Import-ARMtemplate
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding()]
-Param(
-    [Parameter(ValueFromPipeline, ParameterSetName="AsString")]
-    [string]
-    $JsonString
-    ,
-    [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName="FromFile")]
-    [System.IO.FileInfo]
-    [Alias("FullName")]
-    $FileName
-    ,
-    [switch]$PassThru
-)
+    [cmdletbinding()]
+    Param(
+        [Parameter(ValueFromPipeline, ParameterSetName = "AsString")]
+        [string]
+        $JsonString
+        ,
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = "FromFile")]
+        [System.IO.FileInfo]
+        [Alias("FullName")]
+        $FileName
+        ,
+        [switch]$PassThru
+    )
 
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"
-    $sb = New-Object System.Text.StringBuilder
-}
-
-Process
-{
-    if ($PSBoundParameters.ContainsKey("FileName"))
-    {        
-        $fileNameType = $FileName.GetType().Name
-        if ($fileNameType -eq 'FileInfo')
-        {
-            $FileName = $FileName.FullName
-        }        
-        $JsonString = Get-Content -Path $FileName -Encoding UTF8            
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"
+        $sb = New-Object System.Text.StringBuilder
     }
 
-    if ($JsonString)
-    {
-        $null = $sb.Append($JsonString + [environment]::NewLine)
-    }
-}
+    Process {
+        if ($PSBoundParameters.ContainsKey("FileName")) {        
+            $fileNameType = $FileName.GetType().Name
+            if ($fileNameType -eq 'FileInfo') {
+                $FileName = $FileName.FullName
+            }        
+            $JsonString = Get-Content -Path $FileName -Encoding UTF8            
+        }
 
-End
-{    
-    if ($sb.Length -gt 0)
-    {
-        $jsonString = $sb.ToString()        
-        Write-Verbose -Message "$f - $jsonString"
+        if ($JsonString) {
+            $null = $sb.Append($JsonString + [environment]::NewLine)
+        }
+    }
+
+    End {    
+        if ($sb.Length -gt 0) {
+            $jsonString = $sb.ToString()        
+            Write-Verbose -Message "$f - $jsonString"
         
-        $templateObject = $jsonString | ConvertFrom-Json
+            $templateObject = $jsonString | ConvertFrom-Json
 
-        if ($PassThru.IsPresent)
-        {
-            $templateObject
-        }
-        else
-        {
-            $script:Template = $templateObject
+            if ($PassThru.IsPresent) {
+                $templateObject
+            }
+            else {
+                $script:Template = $templateObject
+            }
         }
     }
-}
 
 }

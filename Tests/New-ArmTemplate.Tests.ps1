@@ -22,19 +22,19 @@ Describe "New-ARMTemplate" {
         }
 
         It "Should have a [parameters] property of type [PScustomobject]" {
-             (Get-ARMTemplate).parameters.GetType().Name | Should be 'PScustomobject'
+            (Get-ARMTemplate).parameters.GetType().Name | Should be 'PScustomobject'
         }
 
         It "Should have a [variables] property of type [PScustomobject]" {
-             (Get-ARMTemplate).variables.GetType().Name | Should be 'PScustomobject'
+            (Get-ARMTemplate).variables.GetType().Name | Should be 'PScustomobject'
         }
 
         It "Should have a [resources] property of type Object[]" {
-             (Get-ARMTemplate).resources.GetType().Name | Should be 'Object[]'
+            (Get-ARMTemplate).resources.GetType().Name | Should be 'Object[]'
         }
 
         It "Should have a [outputs] property of type [PScustomobject]" {
-             (Get-ARMTemplate).outputs.GetType().Name | Should be 'PScustomobject'
+            (Get-ARMTemplate).outputs.GetType().Name | Should be 'PScustomobject'
         }
 
         It "Should return an object if Passthru is specified" {
