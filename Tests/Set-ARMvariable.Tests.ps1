@@ -8,8 +8,6 @@ Import-Module $modulePath
 
 New-ArmTemplate
 
-$newVar = New-ARMvariable -Name test -Value testvalue | Add-ARMvariable -PassThru
-
 $newVariableValue = @{
     Name = "test"
     Value = "newTestValue"

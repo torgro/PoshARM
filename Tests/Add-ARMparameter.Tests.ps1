@@ -19,7 +19,7 @@ Describe "Add-ARMparameter" {
         MinLength = '3'
         MaxLength = '99'
         Description = 'Description'
-        Metadata = @{Comment="yalla"}
+        Metadata = @{Comment = "yalla"}
     }
 
     $actual = New-ARMparameter @expected

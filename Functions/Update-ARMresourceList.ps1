@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Update-ARMresourceList
-{
-<#
+function Update-ArmResourceList {
+    <#
 .SYNOPSIS
     This will update the allResources.json file that is used as input when creating a New-ARMresource
 
@@ -38,40 +37,34 @@ function Update-ARMresourceList
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding(
-    SupportsShouldProcess=$true
-)]
-Param(
-    [pscredential]$Credential
-    ,
-    [switch]$Force
-)
+    [cmdletbinding(
+        SupportsShouldProcess = $true
+    )]
+    Param(
+        [pscredential]$Credential
+        ,
+        [switch]$Force
+    )
     $LoggedIn = $false
     $f = $MyInvocation.InvocationName
     Write-Verbose -Message "$f - START"
 
-    try
-    {
+    try {
         Write-Verbose -Message "$f - Getting AzureRMContext"
         
         Get-AzureRmContext
         $LoggedIn = $true
     }
-    catch
-    {
-        $ex = $_.Exception
+    catch {
         Write-Verbose -Message "$f -  Get-AzureRmContext threw an exception, propably not loggedin"
     }
 
-    if ($LoggedIn -eq $false)
-    {
-        if ($Credential)
-        {
+    if ($LoggedIn -eq $false) {
+        if ($Credential) {
             Write-Verbose -Message "$f -  Invoking Login-AzureRmAccount with credentials"
             Login-AzureRmAccount -Credential $Credential -ErrorAction Stop
         }
-        else
-        {
+        else {
             Write-Verbose -Message "$f -  Invoking Login-AzureRmAccount without credentials"
             Login-AzureRmAccount -ErrorAction Stop
         }
@@ -82,14 +75,12 @@ Param(
     $outFile = @{}
     $shouldProcessOperation = "Creating file"
     
-    if ($Force.IsPresent)
-    {
+    if ($Force.IsPresent) {
         $outFile.Add("Force", $true)
         $shouldProcessOperation = "Overwriting file"
     }
    
-    if ($pscmdlet.ShouldProcess("$fileName", $shouldProcessOperation))
-    {
+    if ($pscmdlet.ShouldProcess("$fileName", $shouldProcessOperation)) {
         Write-Verbose -Message "$f -  Getting a providerlist, saving to [$fileName]"
         Get-AzureRmResourceProvider -ListAvailable | ConvertTo-Json -Depth 10 | Out-File -FilePath "$fileName" -Encoding utf8 @outFile
     }

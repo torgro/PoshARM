@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function New-ARMresource
-{
-<#    
+function New-ARMresource {
+    <#    
 .SYNOPSIS    
     Create a new ARM template resource
 
@@ -40,123 +39,111 @@ function New-ARMresource
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding()]
-Param(
-    [string]
-    $APIversion
-    ,
-    [string]
-    $Name
-    ,
-    [string]
-    $Location
-    ,
-    [hashtable]
-    $Tags
-    ,
-    [string]
-    $Comments
-    ,
-    [string[]]
-    $DependsOn
-    ,
-    [hashtable]
-    $SKU
-    ,
-    [string]
-    $Kind
-    ,
-    [hashtable]
-    $Properties
-    ,
-    [array]
-    $Resources
-)
-DynamicParam
-{
-    $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+    [cmdletbinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    Param(
+        [string]
+        $APIversion
+        ,
+        [string]
+        $Name
+        ,
+        [string]
+        $Location
+        ,
+        [hashtable]
+        $Tags
+        ,
+        [string]
+        $Comments
+        ,
+        [string[]]
+        $DependsOn
+        ,
+        [hashtable]
+        $SKU
+        ,
+        [string]
+        $Kind
+        ,
+        [hashtable]
+        $Properties
+        ,
+        [array]
+        $Resources
+    )
+    DynamicParam {
+        $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-    $NewDynParam = @{
-        Name = "Type"
-        Alias = "ResourceName"
-        Mandatory = $true
-        ValueFromPipelineByPropertyName = $true
-        ValueFromPipeline = $true
-        DPDictionary = $Dictionary
-    }
+        $NewDynParam = @{
+            Name = "Type"
+            Alias = "ResourceName"
+            Mandatory = $true
+            ValueFromPipelineByPropertyName = $true
+            ValueFromPipeline = $true
+            DPDictionary = $Dictionary
+        }
 
-    $all = Get-ARMresourceList -ErrorAction SilentlyContinue
+        $all = Get-ARMresourceList -ErrorAction SilentlyContinue
     
-    if ($all)
-    {
-        $null = $NewDynParam.Add("ValidateSet",$all)
+        if ($all) {
+            $null = $NewDynParam.Add("ValidateSet", $all)
+        }
+
+        New-DynamicParam @NewDynParam
+        $Dictionary
     }
 
-    New-DynamicParam @NewDynParam
-    $Dictionary
-}
-
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"
-}
-
-Process
-{
-    $ResourceName = $PSBoundParameters.Type
-
-    $propHash = [ordered]@{
-        PSTypeName = "ARMresource"
-        apiVersion = $APIversion
-        type = $ResourceName
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"
     }
 
-    if ($Name)
-    {
-        $propHash["name"] = $Name
-    }
+    Process {
+        $ResourceName = $PSBoundParameters.Type
 
-    if ($Location)
-    {
-        $propHash.location = $Location
-    }
+        $propHash = [ordered]@{
+            PSTypeName = "ARMresource"
+            apiVersion = $APIversion
+            type = $ResourceName
+        }
 
-    if ($DependsOn)
-    {        
-        $propHash.dependsOn = $DependsOn
-    }
+        if ($Name) {
+            $propHash["name"] = $Name
+        }
 
-    if ($Properties)
-    {        
-        $propHash.properties = $Properties
-    }
+        if ($Location) {
+            $propHash.location = $Location
+        }
 
-    if ($Tags)
-    {
-        $propHash.tags = $Tags
-    }
+        if ($DependsOn) {        
+            $propHash.dependsOn = $DependsOn
+        }
 
-    if ($Comments)
-    {
-        $propHash.comments = $Comments
-    }       
+        if ($Properties) {        
+            $propHash.properties = $Properties
+        }
+
+        if ($Tags) {
+            $propHash.tags = $Tags
+        }
+
+        if ($Comments) {
+            $propHash.comments = $Comments
+        }       
     
-    if ($Resources)
-    {        
-        $propHash.resources = $Resources
-    }
+        if ($Resources) {        
+            $propHash.resources = $Resources
+        }
 
-    if ($SKU)
-    {        
-        $propHash.SKU = $SKU
-    }
+        if ($SKU) {        
+            $propHash.SKU = $SKU
+        }
 
-    if ($Kind)
-    {        
-        $propHash.kind = $Kind
-    }
+        if ($Kind) {        
+            $propHash.kind = $Kind
+        }
 
-    [PSCustomObject]$propHash
-}
+        [PSCustomObject]$propHash
+    }
 }

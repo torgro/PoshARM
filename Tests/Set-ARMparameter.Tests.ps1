@@ -8,8 +8,6 @@ Import-Module $modulePath
 
 New-ArmTemplate
 
-$newParam = New-ARMparameter -Name test -Type string | Add-ARMparameter -PassThru
-
 $newParameterValue = @{
     Type = "int"
     DefaultValue = "test"

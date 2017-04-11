@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Get-ARMvariable
-{
-<#
+function Get-ArmVariable {
+    <#
 .SYNOPSIS
     Get all variable or a specific one by name.
  
@@ -31,66 +30,57 @@ function Get-ARMvariable
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[CmdletBinding()]
-[OutputType('PSCustomObject')]
-Param()
+    [CmdletBinding()]
+    [OutputType('PSCustomObject')]
+    Param()
 
-DynamicParam
-{
-    $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+    DynamicParam {
+        $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-    $NewDynParam = @{
-        Name = "Name"            
-        Mandatory = $false
-        ValueFromPipelineByPropertyName = $true
-        ValueFromPipeline = $false
-        DPDictionary = $Dictionary            
+        $NewDynParam = @{
+            Name = "Name"            
+            Mandatory = $false
+            ValueFromPipelineByPropertyName = $true
+            ValueFromPipeline = $false
+            DPDictionary = $Dictionary            
+        }
+
+        $allVariables = $script:Template.variables.PSobject.Properties.Name
+
+        if ($allVariables) {
+            $null = $NewDynParam.Add("ValidateSet", $allVariables)
+        }
+        else {
+            $null = $NewDynParam.Add("ValidateSet", @("-"))
+        }
+
+        New-DynamicParam @NewDynParam
+        $Dictionary
     }
 
-    $allVariables = $script:Template.variables.PSobject.Properties.Name
-
-    if ($allVariables)
-    {
-        $null = $NewDynParam.Add("ValidateSet",$allVariables)
-    }
-    else
-    {
-        $null = $NewDynParam.Add("ValidateSet",@("-"))
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"
     }
 
-    New-DynamicParam @NewDynParam
-    $Dictionary
-}
+    Process {       
+        $Name = $PSBoundParameters.Name
 
-Begin 
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"
-}
+        if (-not $PSBoundParameters.ContainsKey("Template")) {
+            $Template = $script:Template
+        }
 
-Process 
-{       
-    $Name = $PSBoundParameters.Name
-
-    if (-not $PSBoundParameters.ContainsKey("Template"))
-    {
-        $Template = $script:Template
+        if ($Name) {
+            Write-Verbose -Message "$f -  Finding parameter with name [$Name]"        
+            $Template.variables | Select-Object -Property $Name
+        }
+        else {
+            Write-Verbose -Message "$f -  Returning all variables"            
+            $Template.variables
+        }
     }
 
-    if ($Name)
-    {
-        Write-Verbose -Message "$f -  Finding parameter with name [$Name]"        
-        $Template.variables | Select-Object -Property $Name
+    End {
+        Write-Verbose -Message "$f - START"
     }
-    else 
-    {
-        Write-Verbose -Message "$f -  Returning all variables"            
-        $Template.variables
-    }
-}
-
-End 
-{
-    Write-Verbose -Message "$f - START"
-}
 }

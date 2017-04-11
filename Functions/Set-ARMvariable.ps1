@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Set-ARMvariable
-{
-<#
+function Set-ArmVariable {
+    <#
 .SYNOPSIS
     Update an existing variable in the ARM template
 
@@ -29,61 +28,55 @@ function Set-ARMvariable
     Twitter: @ToreGroneng
 #>
 
-[cmdletbinding()]
-Param(    
-    [Parameter(Mandatory)]
-    $Value
-)
+    [cmdletbinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    Param(    
+        [Parameter(Mandatory)]
+        $Value
+    )
 
-DynamicParam
-{
-    $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+    DynamicParam {
+        $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-    $NewDynParam = @{
-        Name = "Name"            
-        Mandatory = $true
-        ValueFromPipelineByPropertyName = $true
-        ValueFromPipeline = $false
-        DPDictionary = $Dictionary            
-    }
+        $NewDynParam = @{
+            Name = "Name"            
+            Mandatory = $true
+            ValueFromPipelineByPropertyName = $true
+            ValueFromPipeline = $false
+            DPDictionary = $Dictionary            
+        }
     
-    $allVariables = $script:Template.variables.PSobject.Properties.Name
+        $allVariables = $script:Template.variables.PSobject.Properties.Name
 
-    if ($allVariables)
-    {
-        $null = $NewDynParam.Add("ValidateSet",$allVariables)
+        if ($allVariables) {
+            $null = $NewDynParam.Add("ValidateSet", $allVariables)
+        }
+        else {
+            $null = $NewDynParam.Add("ValidateSet", @("-"))
+        }
+
+        New-DynamicParam @NewDynParam
+        $Dictionary
     }
-    else
-    {
-        $null = $NewDynParam.Add("ValidateSet",@("-"))
+
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"    
     }
 
-    New-DynamicParam @NewDynParam
-    $Dictionary
-}
+    Process {
+        $Name = $PSBoundParameters.Name    
 
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"    
-}
-
-Process
-{
-    $Name = $PSBoundParameters.Name    
-
-    $oldValue = Get-ARMVariable -Name $Name | Select-Object -ExpandProperty $Name
-    Write-Verbose -Message "$f -  Updating variable [$Name] from '$oldValue' to '$Value"
+        $oldValue = Get-ARMVariable -Name $Name | Select-Object -ExpandProperty $Name
+        Write-Verbose -Message "$f -  Updating variable [$Name] from '$oldValue' to '$Value"
     
-    if ($script:Template)
-    {
-        $script:Template.variables.$name = $Value
+        if ($script:Template) {
+            $script:Template.variables.$name = $Value
+        }
     }
-}
 
-End
-{
-    Write-Verbose -Message "$f - END"
+    End {
+        Write-Verbose -Message "$f - END"
     
-}
+    }
 }

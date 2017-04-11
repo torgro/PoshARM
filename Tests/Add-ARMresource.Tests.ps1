@@ -13,12 +13,12 @@ Describe "Add-ARMresource" {
         APIversion = '2016-03-30'
         Name = 'MyVM'
         Location = 'EAST-US'
-        Tags = @{tag=1}
+        Tags = @{tag = 1}
         Comments = 'hey'
-        DependsOn = @("item1","item2")
-        SKU = @{name="Standard_LRS"}
+        DependsOn = @("item1", "item2")
+        SKU = @{name = "Standard_LRS"}
         Kind = 'storage'
-        Properties = @{prop1=1}
+        Properties = @{prop1 = 1}
         Type = 'Microsoft.Compute/virtualMachines'
     }
 

@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function New-ARMparameter
-{
-<#    
+function New-ArmParameter {
+    <#    
 .SYNOPSIS    
     Create a new ARM template parameter
 
@@ -26,7 +25,7 @@ function New-ARMparameter
     New-ARMparameter -Name windowsOSVersion -Type String -DefaultValue "2016-Datacenter" @allowedValues
 
     This will create a new parameter named windowsOSVersion of type String, with a default value of "2016-Datacenter" which
-    is in the allowedValues list/array         
+    is in the allowedValues list/array
 
 .INPUTS
     String
@@ -40,76 +39,69 @@ function New-ARMparameter
     Twitter: @ToreGroneng
 #>
     
-[cmdletbinding()]
-Param(
-    [Parameter(Mandatory)]
-    [string]
-    $Name
-    ,
-    [Parameter(Mandatory)]
-    [ValidateSet("string","secureString","int","bool","object","secureObject","array")]
-    [string]
-    $Type
-    ,
-    $DefaultValue
-    ,
-    $AllowedValues
-    ,
-    $MinValue
-    ,
-    $MaxValue
-    ,
-    $MinLength
-    ,
-    $MaxLength
-    ,
-    $Description
-    ,
-    $Metadata
-)
+    [cmdletbinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    Param(
+        [Parameter(Mandatory)]
+        [string]
+        $Name
+        ,
+        [Parameter(Mandatory)]
+        [ValidateSet("string", "secureString", "int", "bool", "object", "secureObject", "array")]
+        [string]
+        $Type
+        ,
+        $DefaultValue
+        ,
+        $AllowedValues
+        ,
+        $MinValue
+        ,
+        $MaxValue
+        ,
+        $MinLength
+        ,
+        $MaxLength
+        ,
+        $Description
+        ,
+        $Metadata
+    )
 
     $propHash = [ordered]@{        
         type = $Type
     }
 
-    if ($DefaultValue)
-    {
+    if ($DefaultValue) {
         $null = $propHash.defaultValue = $DefaultValue
     }
 
-    if ($AllowedValues)
-    {
+    if ($AllowedValues) {
         $null = $propHash.allowedValues = $AllowedValues
     }
 
-    if ($MinValue)
-    {
+    if ($MinValue) {
         $null = $propHash.minValue = $MinValue
     }
 
-    if ($MaxValue)
-    {
+    if ($MaxValue) {
         $null = $propHash.maxValue = $MaxValue
     }
 
-    if ($MinLength)
-    {
+    if ($MinLength) {
         $null = $propHash.minLength = $MinLength
     }
 
-    if ($MaxLength)
-    {
+    if ($MaxLength) {
         $null = $propHash.maxLength = $MaxLength
     }
 
-    if ($Description)
-    {
+    if ($Description) {
         Write-Verbose -Message "Adding description"
         $null = $propHash.metadata = @{description = $Description}
     }
 
-    if ($Metadata)
-    {
+    if ($Metadata) {
         $null = $propHash.metadata += $Metadata
     }
 

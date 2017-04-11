@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function New-ARMvariable
-{
-<#    
+function New-ArmVariable {
+    <#    
 .SYNOPSIS    
     Create a new ARM template variable
 
@@ -41,52 +40,48 @@ function New-ARMvariable
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding()]
-Param(
-    [Parameter(Mandatory)]
-    [string]
-    $Name
-    ,
-    [Parameter(ParameterSetName='Simple')]
-    [string]
-    $Value
-    ,
-    [Parameter(
-        ValueFromPipeline,
-        ParameterSetName='Complex'
-    )]
-    [hashtable]
-    $HashValues
-)
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"        
-}
-
-Process
-{
-    if ($PSCmdlet.ParameterSetName -eq "Simple")
-    {        
-        $propHash = [PSCustomObject][ordered]@{
-            PSTypeName = "ARMvariable"
-            $Name = $Value
-        }
+    [cmdletbinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    Param(
+        [Parameter(Mandatory)]
+        [string]
+        $Name
+        ,
+        [Parameter(ParameterSetName = 'Simple')]
+        [string]
+        $Value
+        ,
+        [Parameter(
+            ValueFromPipeline,
+            ParameterSetName = 'Complex'
+        )]
+        [hashtable]
+        $HashValues
+    )
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"        
     }
 
-    if ($PSCmdlet.ParameterSetName -eq "Complex")
-    {        
-        $propHash = [PSCustomObject][ordered]@{
-            PSTypeName = "ARMvariable"
-            $Name = [PSCustomObject]$HashValues
+    Process {
+        if ($PSCmdlet.ParameterSetName -eq "Simple") {        
+            $propHash = [PSCustomObject][ordered]@{
+                PSTypeName = "ARMvariable"
+                $Name = $Value
+            }
         }
-    }
-    $propHash
-}
 
-End
-{
-    Write-Verbose -Message "$f - END"
-}
+        if ($PSCmdlet.ParameterSetName -eq "Complex") {        
+            $propHash = [PSCustomObject][ordered]@{
+                PSTypeName = "ARMvariable"
+                $Name = [PSCustomObject]$HashValues
+            }
+        }
+        $propHash
+    }
+
+    End {
+        Write-Verbose -Message "$f - END"
+    }
 
 }

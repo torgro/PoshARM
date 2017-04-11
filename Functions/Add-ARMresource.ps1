@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Add-ARMresource
-{
-<#
+function Add-ArmResource {
+    <#
 .SYNOPSIS
     Add an ARM resource to an ARM template.
 
@@ -42,46 +41,40 @@ function Add-ARMresource
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding()]
-Param(
-    [Parameter(Mandatory, ValueFromPipeline)]
-    [PSTypeName('ARMresource')]
-    $InputObject
-    ,    
-    [PSTypeName('ARMtemplate')]
-    $Template
-    ,
-    [switch]
-    $PassThru
-)
-
-Begin
-{
-    $f = $MyInvocation.InvocationName    
-    Write-Verbose -Message "$f - START"
-}
-
-Process
-{
-    if (-not $Template)
-    {
-        Write-Verbose -Message "$f -  Using module level template"
-        $Template = $script:Template
-    }
-
-    if ($Template)
-    {
-        $Template.resources += $InputObject
-    }
-
-    if ($PassThru.IsPresent)
-    {
+    [cmdletbinding()]
+    Param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [PSTypeName('ARMresource')]
         $InputObject
-    }
-}
+        ,    
+        [PSTypeName('ARMtemplate')]
+        $Template
+        ,
+        [switch]
+        $PassThru
+    )
 
-End
-{
-    Write-Verbose -Message "$f - End"
-}
+    Begin {
+        $f = $MyInvocation.InvocationName    
+        Write-Verbose -Message "$f - START"
+    }
+
+    Process {
+        if (-not $Template) {
+            Write-Verbose -Message "$f -  Using module level template"
+            $Template = $script:Template
+        }
+
+        if ($Template) {
+            $Template.resources += $InputObject
+        }
+
+        if ($PassThru.IsPresent) {
+            $InputObject
+        }
+    }
+
+    End {
+        Write-Verbose -Message "$f - End"
+    }
 }

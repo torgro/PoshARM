@@ -16,12 +16,10 @@ Describe "Get-ARMparameterScript" {
             Type = 'string'
         }
 
-        $actualParameter = New-ARMparameter @ExpectedParm | Add-ARMparameter
-
         $paramScript = Get-ARMtemplate | Select-Object -ExpandProperty parameters | Get-ARMparameterScript
         $scriptBlock = [scriptblock]::Create($paramScript)
 
-        New-ARMTemplate        
+        New-ARMTemplate
 
         It "Parameters should be empty before script invoke" {
             ((Get-ARMtemplate).parameters.psobject.properties | Measure-Object).Count | Should be 0

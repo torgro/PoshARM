@@ -12,12 +12,12 @@ Describe "New-ARMresource" {
         APIversion = '2016-03-30'
         Name = 'MyVM'
         Location = 'EAST-US'
-        Tags = @{tag=1}
+        Tags = @{tag = 1}
         Comments = 'hey'
-        DependsOn = @("item1","item2")
+        DependsOn = @("item1", "item2")
         SKU = @{value = "skuvalue"}
         Kind = 'storage'
-        Properties = @{prop1=1}
+        Properties = @{prop1 = 1}
         Type = 'Microsoft.Compute/virtualMachines'
     }
 
@@ -33,7 +33,7 @@ Describe "New-ARMresource" {
             $Actual.GetType().Name | Should be "PSCustomObject"
         }
 
-         It "Should create a PSCustomObject with PStypeName 'ARMresource'" {
+        It "Should create a PSCustomObject with PStypeName 'ARMresource'" {
             $Actual.pstypenames[0] | should be "ARMresource"
         }
 

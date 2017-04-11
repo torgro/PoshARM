@@ -1,7 +1,6 @@
 #Requires -Version 5.0
-function Get-ARMtemplate
-{
-<#
+function Get-ArmTemplate {
+    <#
 .SYNOPSIS
     Get the ARM template defined at the module level
 
@@ -28,41 +27,36 @@ function Get-ARMtemplate
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding(
-    DefaultParameterSetName='foo'
-)]
-Param(
-    [Parameter(ParameterSetName='JSON')]
-    [switch]$AsJSON
-    ,
-    [Parameter(ParameterSetName='HASH')]
-    [switch]$AsHashTableString
-)
+    [cmdletbinding(
+        DefaultParameterSetName = 'foo'
+    )]
+    Param(
+        [Parameter(ParameterSetName = 'JSON')]
+        [switch]$AsJSON
+        ,
+        [Parameter(ParameterSetName = 'HASH')]
+        [switch]$AsHashTableString
+    )
 
-Begin
-{
-    $f = $MyInvocation.InvocationName
-    Write-Verbose -Message "$f - START"    
-}
-
-Process
-{
-    if ($AsJSON.IsPresent -eq $false -and $AsHashTableString.IsPresent -eq $false)
-    {
-        $Script:Template
+    Begin {
+        $f = $MyInvocation.InvocationName
+        Write-Verbose -Message "$f - START"    
     }
 
-    if ($AsJSON.IsPresent)
-    {
-        $json = $Script:Template | ConvertTo-Json -Depth 99
-        $json = $json.replace("\u0027","'")#'
-        $json
-    }
+    Process {
+        if ($AsJSON.IsPresent -eq $false -and $AsHashTableString.IsPresent -eq $false) {
+            $Script:Template
+        }
 
-    if ($AsHashTableString.IsPresent)
-    {
-        $Script:Template | ConvertTo-Hash | Out-HashString
-    }    
-}
+        if ($AsJSON.IsPresent) {
+            $json = $Script:Template | ConvertTo-Json -Depth 99
+            $json = $json.replace("\u0027", "'")#'
+            $json
+        }
+
+        if ($AsHashTableString.IsPresent) {
+            $Script:Template | ConvertTo-Hash | Out-HashString
+        }    
+    }
    
 }

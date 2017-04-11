@@ -1,6 +1,5 @@
-function Set-ARMmetadata
-{
-<#
+function Set-ArmMetadata {
+    <#
 .SYNOPSIS
     Creates a metadata.json file for your ARM template
 
@@ -28,25 +27,25 @@ function Set-ARMmetadata
     Website: www.firstpoint.no
     Twitter: @ToreGroneng
 #>
-[cmdletbinding()]
-Param(
-    $ItemDisplayName
-    ,
-    $Description
-    ,
-    $Summary
-    ,
-    $GitHubUsername
-    ,
-    $FileName = "metadata.json"
-)
+    [cmdletbinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    Param(
+        $ItemDisplayName
+        ,
+        $Description
+        ,
+        $Summary
+        ,
+        $GitHubUsername
+        ,
+        $FileName = "metadata.json"
+    )
     $f = $MyInvocation.InvocationName
     Write-Verbose -Message "$f - START"
 
     $resolvedFilename = Resolve-Path -Path $FileName -ErrorAction SilentlyContinue
     
-    if (-not $resolvedFilename)
-    {
+    if (-not $resolvedFilename) {
         $resolvedFilename = Join-Path -Path $PSScriptRoot -ChildPath metadata.json
     }
 
